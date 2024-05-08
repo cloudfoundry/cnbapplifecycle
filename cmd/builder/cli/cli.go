@@ -10,6 +10,7 @@ import (
 
 	"code.cloudfoundry.org/cnbapplifecycle/pkg/archive"
 	"code.cloudfoundry.org/cnbapplifecycle/pkg/errors"
+	"code.cloudfoundry.org/cnbapplifecycle/pkg/keychain"
 	"code.cloudfoundry.org/cnbapplifecycle/pkg/log"
 	"code.cloudfoundry.org/cnbapplifecycle/pkg/staging"
 	"github.com/spf13/cobra"
@@ -100,7 +101,19 @@ var builderCmd = &cobra.Command{
 			return errors.ErrGenericBuild
 		}
 
-		err = staging.DownloadBuildpacks(buildpacks, buildpacksDir, image.NewFetcher(logger, nil), blob.NewDownloader(logger, downloadCacheDir), orderFile, logger)
+		creds, err := keychain.FromEnv()
+		if err != nil {
+			logger.Errorf("failed to parse %s environment variable, error: %s\n", keychain.CnbCredentialsEnv, err.Error())
+			return errors.ErrGenericBuild
+		}
+		err = staging.DownloadBuildpacks(
+			buildpacks,
+			buildpacksDir,
+			image.NewFetcher(logger, nil, image.WithKeychain(creds)),
+			blob.NewDownloader(logger, downloadCacheDir, blob.WithClient(keychain.NewHTTPClient(creds))),
+			orderFile,
+			logger,
+		)
 		if err != nil {
 			logger.Errorf("failed to download buildpacks, error: %s\n", err.Error())
 			return errors.ErrDownloadingBuildpack

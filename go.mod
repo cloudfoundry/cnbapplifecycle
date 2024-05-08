@@ -8,6 +8,8 @@ require (
 	github.com/buildpacks/lifecycle v0.19.7
 	github.com/buildpacks/pack v0.34.2
 	github.com/docker/docker v26.1.3+incompatible
+	github.com/google/go-containerregistry v0.19.1
+	github.com/jarcoal/httpmock v1.3.1
 	github.com/onsi/ginkgo/v2 v2.19.0
 	github.com/onsi/gomega v1.33.1
 	github.com/spf13/cobra v1.8.0
@@ -72,7 +74,6 @@ require (
 	github.com/gogo/protobuf v1.3.2 // indirect
 	github.com/golang-jwt/jwt/v4 v4.5.0 // indirect
 	github.com/google/go-cmp v0.6.0 // indirect
-	github.com/google/go-containerregistry v0.19.1 // indirect
 	github.com/google/pprof v0.0.0-20240424215950-a892ee059fd6 // indirect
 	github.com/google/uuid v1.6.0 // indirect
 	github.com/gorilla/mux v1.8.0 // indirect
