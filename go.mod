@@ -8,8 +8,8 @@ require (
 	github.com/BurntSushi/toml v1.3.2
 	github.com/apex/log v1.9.0
 	github.com/buildpacks/lifecycle v0.19.6
-	github.com/buildpacks/pack v0.33.3-0.20240508211754-0a39de09a078
-	github.com/docker/docker v26.1.1+incompatible
+	github.com/buildpacks/pack v0.34.2
+	github.com/docker/docker v26.1.3+incompatible
 	github.com/onsi/ginkgo/v2 v2.17.2
 	github.com/onsi/gomega v1.33.1
 	github.com/spf13/cobra v1.8.0
@@ -48,7 +48,7 @@ require (
 	github.com/aws/smithy-go v1.20.1 // indirect
 	github.com/awslabs/amazon-ecr-credential-helper/ecr-login v0.0.0-20231213181459-b0fcec718dc6 // indirect
 	github.com/beorn7/perks v1.0.1 // indirect
-	github.com/buildpacks/imgutil v0.0.0-20240507132533-9f7b96c3d09d // indirect
+	github.com/buildpacks/imgutil v0.0.0-20240605145725-186f89b2d168 // indirect
 	github.com/cenkalti/backoff/v4 v4.2.1 // indirect
 	github.com/cespare/xxhash/v2 v2.2.0 // indirect
 	github.com/chrismellard/docker-credential-acr-env v0.0.0-20230304212654-82a0ddb27589 // indirect
@@ -60,7 +60,7 @@ require (
 	github.com/davecgh/go-spew v1.1.2-0.20180830191138-d8f796af33cc // indirect
 	github.com/dimchansky/utfbom v1.1.1 // indirect
 	github.com/distribution/reference v0.6.0 // indirect
-	github.com/docker/cli v26.1.1+incompatible // indirect
+	github.com/docker/cli v26.1.3+incompatible // indirect
 	github.com/docker/distribution v2.8.3+incompatible // indirect
 	github.com/docker/docker-credential-helpers v0.8.0 // indirect
 	github.com/docker/go-connections v0.5.0 // indirect
