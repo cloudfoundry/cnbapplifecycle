@@ -24,9 +24,11 @@ func DownloadBuildpacks(buildpacks []string, buildpacksDir string, imageFetcher 
 	fetchedBps := []buildpack.BuildModule{}
 	order := dist.Order{{Group: []dist.ModuleRef{}}}
 	downloadOptions := buildpack.DownloadOptions{
-		Daemon:   false,
-		ImageOS:  "linux",
-		Platform: runtime.GOARCH,
+		Daemon: false,
+		Target: &dist.Target{
+			OS:   "linux",
+			Arch: runtime.GOARCH,
+		},
 	}
 
 	bpDownloader := buildpack.NewDownloader(logger, imageFetcher, downloader, nil)
