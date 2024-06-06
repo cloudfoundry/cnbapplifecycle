@@ -3,7 +3,7 @@ module code.cloudfoundry.org/cnbapplifecycle
 go 1.22
 
 require (
-	github.com/BurntSushi/toml v1.3.2
+	github.com/BurntSushi/toml v1.4.0
 	github.com/apex/log v1.9.0
 	github.com/buildpacks/lifecycle v0.19.6
 	github.com/buildpacks/pack v0.34.2
