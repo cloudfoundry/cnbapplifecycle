@@ -7,7 +7,7 @@ toolchain go1.22.2
 require (
 	github.com/BurntSushi/toml v1.3.2
 	github.com/apex/log v1.9.0
-	github.com/buildpacks/lifecycle v0.19.4
+	github.com/buildpacks/lifecycle v0.19.6
 	github.com/buildpacks/pack v0.33.3-0.20240508211754-0a39de09a078
 	github.com/docker/docker v26.1.1+incompatible
 	github.com/onsi/ginkgo/v2 v2.17.2
