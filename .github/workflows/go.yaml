@@ -7,6 +7,9 @@ on:
     branches: ["main"]
   workflow_dispatch: {}
 
+permissions:
+  pull-requests: write
+
 jobs:
   unit:
     runs-on: ubuntu-latest
@@ -16,11 +19,37 @@ jobs:
         with:
           go-version: '1.22'
       - run: make test
-  # integration:
-  #   runs-on: ubuntu-latest
-  #   steps:
-  #     - uses: actions/checkout@v4
-  #     - uses: actions/setup-go@v5
-  #       with:
-  #         go-version: '1.22'
-  #     - run: make integration
+  diego-compat:
+    runs-on: ubuntu-latest
+    if: github.actor == 'dependabot[bot]' && github.event_name == 'pull_request'
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          repository: sap-contributions/diego-release
+          ref: add-cnb-app-lifecycle
+          submodules: recursive
+      - uses: actions/setup-go@v5
+        with:
+          go-version: '1.22'
+      - run: |
+          cd src/code.cloudfoundry.org && go get -u code.cloudfoundry.org/cnbapplifecycle@${{ github.event.pull_request.head.sha }}
+  automerge:
+    runs-on: ubuntu-latest
+    if: github.actor == 'dependabot[bot]' && github.event_name == 'pull_request'
+    needs: [diego-compat, unit]
+    steps:
+      - name: Dependabot metadata
+        id: dependabot-metadata
+        uses: dependabot/fetch-metadata@v1
+      - name: Approve a PR if not already approved
+        run: |
+          gh pr checkout "$PR_URL" # sets the upstream metadata for `gh pr status`
+          if [ "$(gh pr status --json reviewDecision -q .currentBranch.reviewDecision)" != "APPROVED" ];
+          then gh pr review --approve "$PR_URL"
+          else echo "PR already approved, skipping additional approvals to minimize emails/notification noise.";
+          fi
+
+          # gh pr merge --merge --rebase "$PR_URL"
+        env:
+          PR_URL: ${{ github.event.pull_request.html_url }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
