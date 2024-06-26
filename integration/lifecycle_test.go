@@ -114,6 +114,8 @@ var _ = Describe("Lifecycle", func() {
 			Expect(err).To(BeNil())
 
 			outString := buf.String()
+			Expect(outString).To(ContainSubstring("Run image info in analyzed metadata is"))
+			Expect(outString).To(ContainSubstring("Checking for match against descriptor"))
 			Expect(outString).To(ContainSubstring("Finished running build"))
 			Expect(outString).To(ContainSubstring("Copying SBOM files"))
 			Expect(outString).To(ContainSubstring("Listing processes"))

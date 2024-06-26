@@ -7,6 +7,7 @@ import (
 	"encoding/json"
 	"os"
 	"path/filepath"
+	"runtime"
 
 	"code.cloudfoundry.org/cnbapplifecycle/pkg/archive"
 	"code.cloudfoundry.org/cnbapplifecycle/pkg/errors"
@@ -101,6 +102,13 @@ var builderCmd = &cobra.Command{
 			return errors.ErrGenericBuild
 		}
 
+		analyzePath := filepath.Join(layersDir, "analyzed.toml")
+		analyzeMD, err := writeAnalyzed(analyzePath, logger)
+		if err != nil {
+			logger.Errorf("failed to create 'analyzed.toml', error: %s\n", err.Error())
+			return errors.ErrGenericBuild
+		}
+
 		creds, err := keychain.FromEnv()
 		if err != nil {
 			logger.Errorf("failed to parse %s environment variable, error: %s\n", keychain.CnbCredentialsEnv, err.Error())
@@ -128,6 +136,7 @@ var builderCmd = &cobra.Command{
 		)
 
 		detector, err := detectorFactory.NewDetector(platform.LifecycleInputs{
+			AnalyzedPath:  analyzePath,
 			PlatformAPI:   platformAPI,
 			AppDir:        workspaceDir,
 			BuildpacksDir: buildpacksDir,
@@ -179,7 +188,7 @@ var builderCmd = &cobra.Command{
 			Err:           os.Stderr,
 			Plan:          plan,
 			PlatformAPI:   platformAPI,
-			AnalyzeMD:     files.Analyzed{},
+			AnalyzeMD:     analyzeMD,
 		}
 
 		logger.Phase("BUILDING")
@@ -269,4 +278,17 @@ var builderCmd = &cobra.Command{
 
 		return nil
 	},
+}
+
+func writeAnalyzed(path string, logger *log.Logger) (files.Analyzed, error) {
+	analyzed := files.Analyzed{
+		RunImage: &files.RunImage{
+			TargetMetadata: &files.TargetMetadata{
+				OS:   "linux",
+				Arch: runtime.GOARCH,
+			},
+		},
+	}
+
+	return analyzed, files.Handler.WriteAnalyzed(path, &analyzed, logger)
 }
