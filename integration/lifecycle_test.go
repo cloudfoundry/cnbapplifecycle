@@ -28,8 +28,9 @@ var _ = Describe("Lifecycle", func() {
 	BeforeEach(func() {
 		cacheDir = GinkgoT().TempDir()
 		req := testcontainers.ContainerRequest{
-			Image:        "ubuntu:noble",
-			ExposedPorts: []string{"8080/tcp"},
+			Image:         "ubuntu:noble",
+			ImagePlatform: "linux/amd64",
+			ExposedPorts:  []string{"8080/tcp"},
 			HostConfigModifier: func(hc *container.HostConfig) {
 				hc.Binds = []string{cacheDir + ":/tmp/cache"}
 			},
