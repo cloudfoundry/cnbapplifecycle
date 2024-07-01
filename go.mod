@@ -7,7 +7,7 @@ require (
 	github.com/apex/log v1.9.0
 	github.com/buildpacks/lifecycle v0.19.7
 	github.com/buildpacks/pack v0.34.2
-	github.com/docker/docker v26.1.3+incompatible
+	github.com/docker/docker v27.0.3+incompatible
 	github.com/google/go-containerregistry v0.19.2
 	github.com/jarcoal/httpmock v1.3.1
 	github.com/onsi/ginkgo/v2 v2.19.0
