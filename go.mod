@@ -8,7 +8,7 @@ require (
 	github.com/buildpacks/lifecycle v0.19.7
 	github.com/buildpacks/pack v0.34.2
 	github.com/docker/docker v27.0.3+incompatible
-	github.com/google/go-containerregistry v0.19.2
+	github.com/google/go-containerregistry v0.20.0
 	github.com/jarcoal/httpmock v1.3.1
 	github.com/onsi/ginkgo/v2 v2.19.0
 	github.com/onsi/gomega v1.33.1
