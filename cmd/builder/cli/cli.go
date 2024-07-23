@@ -10,6 +10,7 @@ import (
 	"runtime"
 
 	"code.cloudfoundry.org/cnbapplifecycle/pkg/archive"
+	"code.cloudfoundry.org/cnbapplifecycle/pkg/buildpacks"
 	"code.cloudfoundry.org/cnbapplifecycle/pkg/errors"
 	"code.cloudfoundry.org/cnbapplifecycle/pkg/keychain"
 	"code.cloudfoundry.org/cnbapplifecycle/pkg/log"
@@ -43,8 +44,9 @@ var (
 	cacheOutputFile string
 	result          string
 	dropletFile     string
-	buildpacks      []string
+	buildpackList   []string
 	envVarNames     []string
+	autoDetect      bool
 )
 
 var (
@@ -59,7 +61,7 @@ func Execute() error {
 }
 
 func init() {
-	builderCmd.Flags().StringSliceVarP(&buildpacks, "buildpack", "b", nil, "buildpack(s) to use")
+	builderCmd.Flags().StringSliceVarP(&buildpackList, "buildpack", "b", nil, "buildpack(s) to use")
 	builderCmd.Flags().StringVarP(&dropletFile, "droplet", "d", "/tmp/droplet", "output droplet file")
 	builderCmd.Flags().StringVarP(&result, "result", "r", "/tmp/result.json", "result file")
 	builderCmd.Flags().StringVarP(&workspaceDir, "workspace-dir", "w", DefaultWorkspacePath, "app workspace dir")
@@ -67,6 +69,7 @@ func init() {
 	builderCmd.Flags().StringSliceVarP(&envVarNames, "pass-env-var", "", nil, "environment variable(s) to pass to buildpacks")
 	builderCmd.Flags().StringVarP(&cacheDir, "cache-dir", "c", "/tmp/cache", "cache dir")
 	builderCmd.Flags().StringVarP(&cacheOutputFile, "cache-output", "", "/tmp/cache-output.tgz", "cache output")
+	builderCmd.Flags().BoolVar(&autoDetect, "auto-detect", false, "run auto-detection with the provided buildpacks")
 	_ = builderCmd.MarkFlagRequired("buildpack")
 }
 
@@ -114,12 +117,20 @@ var builderCmd = &cobra.Command{
 			logger.Errorf("failed to parse %s environment variable, error: %s\n", keychain.CnbCredentialsEnv, err.Error())
 			return errors.ErrGenericBuild
 		}
-		err = staging.DownloadBuildpacks(
-			buildpacks,
+
+		buildpackList, err = buildpacks.Translate(buildpackList, buildpacksDir, logger)
+		if err != nil {
+			logger.Errorf("failed to translate buildpack locations %#v, error: %s\n", buildpackList, err.Error())
+			return errors.ErrDownloadingBuildpack
+		}
+
+		err = buildpacks.DownloadBuildpacks(
+			buildpackList,
 			buildpacksDir,
 			image.NewFetcher(logger, nil, image.WithKeychain(creds)),
 			blob.NewDownloader(logger, downloadCacheDir, blob.WithClient(keychain.NewHTTPClient(creds))),
 			orderFile,
+			autoDetect,
 			logger,
 		)
 		if err != nil {

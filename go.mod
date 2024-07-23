@@ -7,6 +7,7 @@ require (
 	github.com/apex/log v1.9.0
 	github.com/buildpacks/lifecycle v0.20.0
 	github.com/buildpacks/pack v0.34.2
+	github.com/cespare/xxhash/v2 v2.3.0
 	github.com/docker/docker v27.0.3+incompatible
 	github.com/google/go-containerregistry v0.20.0
 	github.com/jarcoal/httpmock v1.3.1
@@ -50,7 +51,6 @@ require (
 	github.com/beorn7/perks v1.0.1 // indirect
 	github.com/buildpacks/imgutil v0.0.0-20240605145725-186f89b2d168 // indirect
 	github.com/cenkalti/backoff/v4 v4.2.1 // indirect
-	github.com/cespare/xxhash/v2 v2.2.0 // indirect
 	github.com/chrismellard/docker-credential-acr-env v0.0.0-20230304212654-82a0ddb27589 // indirect
 	github.com/containerd/containerd v1.7.19 // indirect
 	github.com/containerd/log v0.1.0 // indirect
