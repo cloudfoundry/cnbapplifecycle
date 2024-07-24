@@ -1,14 +1,11 @@
 package buildpacks
 
 import (
-	"archive/tar"
-	"compress/gzip"
 	"errors"
 	"fmt"
 	"os"
 	"path/filepath"
 
-	"code.cloudfoundry.org/cnbapplifecycle/pkg/archive"
 	"code.cloudfoundry.org/cnbapplifecycle/pkg/log"
 	"github.com/cespare/xxhash/v2"
 )
@@ -24,12 +21,7 @@ func Translate(bps []string, buildpacksDir string, logger *log.Logger) ([]string
 		}
 
 		if downloaded {
-			newPath, err := createArchive(bpDir)
-			if err != nil {
-				return nil, err
-			}
-
-			newList = append(newList, newPath)
+			newList = append(newList, fmt.Sprintf("file://%s", bpDir))
 		} else {
 			newList = append(newList, bp)
 		}
@@ -58,19 +50,4 @@ func checkIfDownloaded(path string) (bool, error) {
 
 func buildpackPath(name string, path string) string {
 	return filepath.Join(path, fmt.Sprintf("%016x", xxhash.Sum64String(name)))
-}
-
-func createArchive(path string) (string, error) {
-	newPath := fmt.Sprintf("%s.tgz", path)
-
-	f, err := os.OpenFile(newPath, os.O_CREATE|os.O_WRONLY|os.O_TRUNC, 0o644)
-	if err != nil {
-		return "", err
-	}
-	defer f.Close()
-
-	bgw := gzip.NewWriter(f)
-	defer bgw.Close()
-
-	return fmt.Sprintf("file://%s", newPath), archive.FromDirectory(path, tar.NewWriter(bgw))
 }

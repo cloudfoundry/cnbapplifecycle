@@ -37,10 +37,10 @@ var _ = Describe("Translate", func() {
 		bps, err = buildpacks.Translate(bps, bpDir, logger)
 		Expect(err).NotTo(HaveOccurred())
 		Expect(bps).To(Equal([]string{
-			fmt.Sprintf("file://%s.tgz", filepath.Join(bpDir, hashedName)),
+			fmt.Sprintf("file://%s", filepath.Join(bpDir, hashedName)),
 			"bar",
 		}))
-		Expect(fmt.Sprintf("%s.tgz", filepath.Join(bpDir, hashedName))).To(BeARegularFile())
+		Expect(filepath.Join(bpDir, hashedName)).To(BeADirectory())
 	})
 
 	When("when hashed path is not a directory", func() {
