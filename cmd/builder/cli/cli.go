@@ -31,7 +31,7 @@ import (
 )
 
 const (
-	PlatformAPI          = "0.13"
+	PlatformAPI          = "0.14"
 	DefaultLayersPath    = "/home/vcap/layers"
 	DefaultWorkspacePath = "/home/vcap/workspace"
 )
@@ -159,7 +159,7 @@ var builderCmd = &cobra.Command{
 		}
 
 		logger.Phase("RESTORING")
-		cache, err := cache.NewVolumeCache(cacheDir)
+		cache, err := cache.NewVolumeCache(cacheDir, logger)
 		if err != nil {
 			logger.Errorf("failed to initialise cache, error: %s\n", err.Error())
 			return errors.ErrRestoring
