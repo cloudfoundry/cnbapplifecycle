@@ -18,7 +18,7 @@ jobs:
       - uses: actions/checkout@v4
       - uses: actions/setup-go@v5
         with:
-          go-version: '1.22'
+          go-version: stable
       - run: make test
   diego-compat:
     runs-on: ubuntu-latest
@@ -26,12 +26,12 @@ jobs:
     steps:
       - uses: actions/checkout@v4
         with:
-          repository: sap-contributions/diego-release
-          ref: add-cnb-app-lifecycle
+          repository: cloudfoundry/diego-release
+          ref: develop
           submodules: recursive
       - uses: actions/setup-go@v5
         with:
-          go-version: '1.22'
+          go-version: stable
       - run: |
           cd src/code.cloudfoundry.org && go get -u code.cloudfoundry.org/cnbapplifecycle@${{ github.event.pull_request.head.sha }}
   automerge:
