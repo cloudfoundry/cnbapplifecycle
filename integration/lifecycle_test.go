@@ -18,6 +18,17 @@ import (
 	"github.com/testcontainers/testcontainers-go/exec"
 )
 
+func runInContainer(ctx context.Context, container testcontainers.Container, cmd ...string) error {
+	code, _, err := container.Exec(ctx, cmd)
+	if code != 0 {
+		return fmt.Errorf("failed to run %q, RC: %d", cmd[0], code)
+	}
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
 var _ = Describe("Lifecycle", func() {
 	var (
 		testContainer testcontainers.Container
@@ -80,33 +91,20 @@ var _ = Describe("Lifecycle", func() {
 								return err
 							}
 
-							code, _, err := container.Exec(ctx, []string{"chown", "-R", "ubuntu:ubuntu", "/home/ubuntu/workspace"})
-							if code != 0 {
-								return fmt.Errorf("failed to run chown, RC: %d", code)
-							}
-							if err != nil {
+							if err := runInContainer(ctx, container, "chown", "-R", "ubuntu:ubuntu", "/home/ubuntu/workspace"); err != nil {
 								return err
 							}
 
-							code, _, err = container.Exec(ctx, []string{"mkdir", "-p", "/tmp/buildpacks"})
-							if code != 0 {
-								return fmt.Errorf("failed to run mkdir, RC: %d", code)
-							}
-							if err != nil {
+							if err := runInContainer(ctx, container, "mkdir", "-p", "/tmp/buildpacks"); err != nil {
 								return err
 							}
 
-							code, _, err = container.Exec(ctx, []string{"skopeo", "copy", "docker://gcr.io/paketo-buildpacks/java:latest", "oci:/tmp/buildpacks/10bfa3ba0b8af13e"})
-							if code != 0 {
-								return fmt.Errorf("failed to run skopeo, RC: %d", code)
-							}
-							if err != nil {
+							if err := runInContainer(ctx, container, "skopeo", "copy", "docker://gcr.io/paketo-buildpacks/java:latest", "oci:/tmp/buildpacks/10bfa3ba0b8af13e"); err != nil {
 								return err
 							}
 
-							code, _, err = container.Exec(ctx, []string{"chown", "-R", "ubuntu:ubuntu", "/tmp/buildpacks"})
-							if code != 0 {
-								return fmt.Errorf("failed to run chown, RC: %d", code)
+							if err := runInContainer(ctx, container, "chown", "-R", "ubuntu:ubuntu", "/tmp/buildpacks"); err != nil {
+								return err
 							}
 
 							return err
