@@ -1,4 +1,4 @@
-package staging_test
+package buildpacks_test
 
 import (
 	"bytes"
@@ -9,8 +9,8 @@ import (
 	"strings"
 	"time"
 
+	"code.cloudfoundry.org/cnbapplifecycle/pkg/buildpacks"
 	"code.cloudfoundry.org/cnbapplifecycle/pkg/log"
-	"code.cloudfoundry.org/cnbapplifecycle/pkg/staging"
 	"github.com/BurntSushi/toml"
 	"github.com/buildpacks/lifecycle/api"
 	"github.com/buildpacks/pack/pkg/archive"
@@ -56,7 +56,7 @@ func (f fakeDownloader) Download(ctx context.Context, pathOrURI string) (blob.Bl
 
 var _ = Describe("DownloadBuildpacks", func() {
 	var err error
-	var logger *log.Logger = log.NewLogger()
+	var logger = log.NewLogger()
 	var downloader = fakeDownloader{}
 	var orderFile *os.File
 	var buildpacksDir string
@@ -74,11 +74,11 @@ var _ = Describe("DownloadBuildpacks", func() {
 	})
 
 	It("creates empty order.toml for empty buildpack list", func() {
-		err = staging.DownloadBuildpacks([]string{}, buildpacksDir, nil, downloader, orderFile, logger)
+		err = buildpacks.DownloadBuildpacks([]string{}, buildpacksDir, nil, downloader, orderFile, false, logger)
 
 		Expect(err).ToNot(HaveOccurred())
 
-		orderToml := staging.OrderTOML{}
+		orderToml := buildpacks.OrderTOML{}
 
 		b, err := os.ReadFile(orderFile.Name())
 		Expect(err).NotTo(HaveOccurred())
@@ -86,16 +86,15 @@ var _ = Describe("DownloadBuildpacks", func() {
 		_, err = toml.Decode(string(b), &orderToml)
 		Expect(err).NotTo(HaveOccurred())
 
-		Expect(orderToml.Order).To(HaveLen(1))
-		Expect(orderToml.Order[0].Group).To(HaveLen(0))
+		Expect(orderToml.Order).To(HaveLen(0))
 	})
 
 	It("creates order.toml and downloads a buildpacks", func() {
-		err = staging.DownloadBuildpacks([]string{"file:/buildpack1", "file:/buildpack2"}, buildpacksDir, nil, downloader, orderFile, logger)
+		err = buildpacks.DownloadBuildpacks([]string{"file:/buildpack1", "file:/buildpack2"}, buildpacksDir, nil, downloader, orderFile, false, logger)
 
 		Expect(err).ToNot(HaveOccurred())
 
-		orderToml := staging.OrderTOML{}
+		orderToml := buildpacks.OrderTOML{}
 
 		b, err := os.ReadFile(orderFile.Name())
 		Expect(err).NotTo(HaveOccurred())
@@ -114,13 +113,37 @@ var _ = Describe("DownloadBuildpacks", func() {
 		Expect(err).NotTo(HaveOccurred())
 	})
 
+	It("creates order.toml and downloads a buildpacks with autoDetect: true", func() {
+		err = buildpacks.DownloadBuildpacks([]string{"file:/buildpack1", "file:/buildpack2"}, buildpacksDir, nil, downloader, orderFile, true, logger)
+
+		Expect(err).ToNot(HaveOccurred())
+
+		orderToml := buildpacks.OrderTOML{}
+
+		b, err := os.ReadFile(orderFile.Name())
+		Expect(err).NotTo(HaveOccurred())
+
+		_, err = toml.Decode(string(b), &orderToml)
+		Expect(err).NotTo(HaveOccurred())
+
+		Expect(orderToml.Order).To(HaveLen(2))
+		Expect(orderToml.Order[0].Group).To(HaveLen(1))
+		Expect(orderToml.Order[1].Group).To(HaveLen(1))
+		Expect(orderToml.Order[0].Group[0].ID).To(Equal("buildpack1"))
+		Expect(orderToml.Order[1].Group[0].ID).To(Equal("buildpack2"))
+
+		_, err = os.Stat(filepath.Join(buildpacksDir, "buildpack1"))
+		Expect(err).NotTo(HaveOccurred())
+		_, err = os.Stat(filepath.Join(buildpacksDir, "buildpack2"))
+		Expect(err).NotTo(HaveOccurred())
+	})
+
 	It("works for duplicated buildpacks", func() {
-		err = staging.DownloadBuildpacks([]string{"file:/buildpack", "file:/buildpack"}, buildpacksDir, nil, downloader, orderFile, logger)
+		err = buildpacks.DownloadBuildpacks([]string{"file:/buildpack", "file:/buildpack"}, buildpacksDir, nil, downloader, orderFile, false, logger)
 
 		Expect(err).ToNot(HaveOccurred())
 
 		_, err = os.Stat(filepath.Join(buildpacksDir, "buildpack"))
 		Expect(err).NotTo(HaveOccurred())
 	})
-
 })

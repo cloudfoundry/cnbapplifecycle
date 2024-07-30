@@ -6,7 +6,8 @@ require (
 	github.com/BurntSushi/toml v1.4.0
 	github.com/apex/log v1.9.0
 	github.com/buildpacks/lifecycle v0.20.0
-	github.com/buildpacks/pack v0.34.2
+	github.com/buildpacks/pack v0.35.1-0.20240729220708-a651c5dac4c2
+	github.com/cespare/xxhash/v2 v2.3.0
 	github.com/docker/docker v27.0.3+incompatible
 	github.com/google/go-containerregistry v0.20.0
 	github.com/jarcoal/httpmock v1.3.1
@@ -50,7 +51,6 @@ require (
 	github.com/beorn7/perks v1.0.1 // indirect
 	github.com/buildpacks/imgutil v0.0.0-20240605145725-186f89b2d168 // indirect
 	github.com/cenkalti/backoff/v4 v4.2.1 // indirect
-	github.com/cespare/xxhash/v2 v2.2.0 // indirect
 	github.com/chrismellard/docker-credential-acr-env v0.0.0-20230304212654-82a0ddb27589 // indirect
 	github.com/containerd/containerd v1.7.19 // indirect
 	github.com/containerd/log v0.1.0 // indirect
@@ -117,11 +117,11 @@ require (
 	go.opentelemetry.io/otel v1.25.0 // indirect
 	go.opentelemetry.io/otel/metric v1.25.0 // indirect
 	go.opentelemetry.io/otel/trace v1.25.0 // indirect
-	golang.org/x/crypto v0.24.0 // indirect
+	golang.org/x/crypto v0.25.0 // indirect
 	golang.org/x/net v0.26.0 // indirect
 	golang.org/x/sync v0.7.0 // indirect
 	golang.org/x/sys v0.22.0 // indirect
-	golang.org/x/term v0.21.0 // indirect
+	golang.org/x/term v0.22.0 // indirect
 	golang.org/x/text v0.16.0 // indirect
 	golang.org/x/tools v0.21.1-0.20240508182429-e35e4ccd0d2d // indirect
 	google.golang.org/genproto/googleapis/api v0.0.0-20240318140521-94a12d6c2237 // indirect
