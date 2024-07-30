@@ -46,7 +46,7 @@ var _ = Describe("Translate", func() {
 	When("when hashed path is not a directory", func() {
 		BeforeEach(func() {
 			Expect(os.RemoveAll(filepath.Join(bpDir, hashedName))).To(Succeed())
-			Expect(os.WriteFile(filepath.Join(bpDir, hashedName), []byte("not a directory"), 0o644)).To(Succeed())
+			Expect(os.WriteFile(filepath.Join(bpDir, hashedName), []byte("some file"), 0o644)).To(Succeed())
 		})
 
 		It("throws an error", func() {
