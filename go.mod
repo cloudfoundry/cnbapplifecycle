@@ -9,7 +9,7 @@ require (
 	github.com/buildpacks/pack v0.35.1-0.20240729220708-a651c5dac4c2
 	github.com/cespare/xxhash/v2 v2.3.0
 	github.com/docker/docker v27.0.3+incompatible
-	github.com/google/go-containerregistry v0.20.0
+	github.com/google/go-containerregistry v0.20.1
 	github.com/jarcoal/httpmock v1.3.1
 	github.com/onsi/ginkgo/v2 v2.19.0
 	github.com/onsi/gomega v1.33.1
