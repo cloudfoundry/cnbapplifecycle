@@ -94,6 +94,8 @@ github.com/buildpacks/lifecycle v0.20.0 h1:CjJHiy6CZR0bYgPcpLRAnpIyivPVfkqoHbdNm
 github.com/buildpacks/lifecycle v0.20.0/go.mod h1:GsOR17l4mSLmXbN4Sy3ueq0hcRJo6WA4/zSHqsY3AjU=
 github.com/buildpacks/pack v0.35.0 h1:cgIZ5T1fKVBOAb3CtHJAMlRb3/OYez3fIIyqmComVhY=
 github.com/buildpacks/pack v0.35.0/go.mod h1:ttb2Qmr1u7LKnhZNZJLCE/WQUXTtZoo+mJ4welgxS5c=
+github.com/buildpacks/pack v0.35.1-0.20240729220708-a651c5dac4c2 h1:1NhohOBznDpu1kWcZMPNOgFjXfkl0PVjnplLgW33zSE=
+github.com/buildpacks/pack v0.35.1-0.20240729220708-a651c5dac4c2/go.mod h1:ttb2Qmr1u7LKnhZNZJLCE/WQUXTtZoo+mJ4welgxS5c=
 github.com/cenkalti/backoff/v4 v4.2.1 h1:y4OZtCnogmCPw98Zjyt5a6+QwPLGkiQsYW5oUqylYbM=
 github.com/cenkalti/backoff/v4 v4.2.1/go.mod h1:Y3VNntkOUPxTVeUxJ/G5vcM//AlwfmyYozVcomhLiZE=
 github.com/cespare/xxhash/v2 v2.3.0 h1:UL815xU9SqsFlibzuggzjXhog7bL6oX9BbNZnL2UFvs=
