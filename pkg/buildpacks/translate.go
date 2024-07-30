@@ -42,7 +42,7 @@ func checkIfDownloaded(path string) (bool, error) {
 	}
 
 	if !fi.IsDir() {
-		return false, fmt.Errorf("%s is not a directory", path)
+		return false, fmt.Errorf("%q is not a directory", path)
 	}
 
 	return true, nil
