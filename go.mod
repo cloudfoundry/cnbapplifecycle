@@ -1,8 +1,6 @@
 module code.cloudfoundry.org/cnbapplifecycle
 
-go 1.22.0
-
-toolchain go1.22.5
+go 1.23
 
 require (
 	github.com/BurntSushi/toml v1.4.0
