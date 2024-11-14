@@ -4,13 +4,18 @@ Lifecycle that produces Cloud Foundry droplets using Cloud Native Buildpacks.
 
 ## Builder
 
-| Flag(s)                | Type      | Description         | Default                |
-| ---------------------- | --------- | ------------------- | ---------------------- |
-| `-b`, `--buildpacks`   | `strings` | buildpacks to use   |                        |
-| `-d`, `--droplet`      | `string`  | output droplet file | `/tmp/droplet`         |
-| `-l`, `--layers`       | `string`  | layers dir          | `/home/vcap/layers`    |
-| `-r`, `--result`       | `string`  | result file         | `/tmp/result.json`     |
-| `-w`, `--workspaceDir` | `string`  | app workspace dir   | `/home/vcap/workspace` |
+| Flag(s)                   | Type       | Description                                     | Default                 |
+| ------------------------- | ---------- | ----------------------------------------------- | ----------------------- |
+| `-b`, `--buildpacks`      | `[]string` | buildpacks to use                               |                         |
+| `--system-buildpacks-dir` | `string`   | directory where system buildpacks are located   | `/tmp/buildpacks`       |
+| `-d`, `--droplet`         | `string`   | output droplet file                             | `/tmp/droplet`          |
+| `-r`, `--result`          | `string`   | result file                                     | `/tmp/result.json`      |
+| `-w`, `--workspaceDir`    | `string`   | app workspace dir                               | `/home/vcap/workspace`  |
+| `-l`, `--layers`          | `string`   | layers dir                                      | `/home/vcap/layers`     |
+| `--pass-env-var`          | `[]string` | environment variable(s) to pass to buildpacks   |                         |
+| `-c`, `--cache-dir`       | `string`   | cache dir                                       | `/tmp/cache`            |
+| `--cache-output`          | `string`   | cache output                                    | `/tmp/cache-output.tgz` |
+| `--auto-detect`           | `bool`     | run auto-detection with the provided buildpacks | `false`                 |
 
 ### Metadata
 
