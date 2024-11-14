@@ -96,7 +96,7 @@ var builderCmd = &cobra.Command{
 
 		for name, dir := range tempDirs {
 			if *dir, err = os.MkdirTemp("", name); err != nil {
-				logger.Errorf("failed to create %s folder, error: %s\n", name, err.Error())
+				logger.Errorf("failed to create folder %q, error: %s\n", name, err.Error())
 				return errors.ErrGenericBuild
 			}
 		}
