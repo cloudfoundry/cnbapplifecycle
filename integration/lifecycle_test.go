@@ -136,7 +136,7 @@ var _ = Describe("Lifecycle", func() {
 		_, err = io.Copy(buf, out)
 		Expect(err).To(BeNil())
 		outString := buf.String()
-		Expect(outString).To(ContainSubstring("Downloading buildpack from URI: file://"))
+		Expect(outString).To(ContainSubstring("Using buildpacks: file://"))
 		Expect(outString).To(ContainSubstring("Run image info in analyzed metadata is"))
 		Expect(outString).To(ContainSubstring("Checking for match against descriptor"))
 		Expect(outString).To(ContainSubstring("Finished running build"))

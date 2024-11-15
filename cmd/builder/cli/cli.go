@@ -38,22 +38,21 @@ const (
 )
 
 var (
-	layersDir       string
-	workspaceDir    string
-	cacheDir        string
-	cacheOutputFile string
-	result          string
-	dropletFile     string
-	buildpackList   []string
-	envVarNames     []string
-	autoDetect      bool
-)
-
-var (
-	platformDir      = filepath.Join(os.TempDir(), "platform")
-	buildpacksDir    = filepath.Join(os.TempDir(), "buildpacks")
-	extensionsDir    = filepath.Join(os.TempDir(), "extensions")
-	downloadCacheDir = filepath.Join(os.TempDir(), "download-cache")
+	layersDir           string
+	workspaceDir        string
+	cacheDir            string
+	cacheOutputFile     string
+	result              string
+	dropletFile         string
+	buildpackList       []string
+	envVarNames         []string
+	autoDetect          bool
+	platformDir         string
+	buildpacksDir       string
+	systemBuildpacksDir string
+	extensionsDir       string
+	downloadCacheDir    string
+	err                 error
 )
 
 func Execute() error {
@@ -62,6 +61,7 @@ func Execute() error {
 
 func init() {
 	builderCmd.Flags().StringSliceVarP(&buildpackList, "buildpack", "b", nil, "buildpack(s) to use")
+	builderCmd.Flags().StringVarP(&systemBuildpacksDir, "system-buildpacks-dir", "", "/tmp/buildpacks", "system buildpacks dir")
 	builderCmd.Flags().StringVarP(&dropletFile, "droplet", "d", "/tmp/droplet", "output droplet file")
 	builderCmd.Flags().StringVarP(&result, "result", "r", "/tmp/result.json", "result file")
 	builderCmd.Flags().StringVarP(&workspaceDir, "workspace-dir", "w", DefaultWorkspacePath, "app workspace dir")
@@ -87,7 +87,21 @@ var builderCmd = &cobra.Command{
 			return errors.ErrGenericBuild
 		}
 
-		for _, dir := range []string{layersDir, platformDir, buildpacksDir, extensionsDir, downloadCacheDir, cacheDir} {
+		tempDirs := map[string]*string{
+			"platform":       &platformDir,
+			"buildpacks":     &buildpacksDir,
+			"extensions":     &extensionsDir,
+			"download-cache": &downloadCacheDir,
+		}
+
+		for name, dir := range tempDirs {
+			if *dir, err = os.MkdirTemp("", name); err != nil {
+				logger.Errorf("failed to create folder %q, error: %s\n", name, err.Error())
+				return errors.ErrGenericBuild
+			}
+		}
+
+		for _, dir := range []string{layersDir, cacheDir} {
 			if err := os.MkdirAll(dir, 0o755); err != nil {
 				logger.Errorf("failed to create %q, error: %s\n", dir, err.Error())
 				return errors.ErrGenericBuild
@@ -99,7 +113,7 @@ var builderCmd = &cobra.Command{
 			return errors.ErrGenericBuild
 		}
 
-		orderFile, err := os.Create(filepath.Join(buildpacksDir, "order.toml"))
+		orderFile, err := os.CreateTemp("", "order.toml")
 		if err != nil {
 			logger.Errorf("failed to create 'order.toml', error: %s\n", err.Error())
 			return errors.ErrGenericBuild
@@ -118,7 +132,7 @@ var builderCmd = &cobra.Command{
 			return errors.ErrGenericBuild
 		}
 
-		buildpackList, err = buildpacks.Translate(buildpackList, buildpacksDir, logger)
+		buildpackList, err = buildpacks.Translate(buildpackList, systemBuildpacksDir, logger)
 		if err != nil {
 			logger.Errorf("failed to translate buildpack locations %#v, error: %s\n", buildpackList, err.Error())
 			return errors.ErrDownloadingBuildpack
