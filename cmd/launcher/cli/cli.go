@@ -2,6 +2,7 @@ package cli
 
 import (
 	"os"
+	"strings"
 
 	"github.com/BurntSushi/toml"
 	"github.com/buildpacks/lifecycle/api"
@@ -10,6 +11,7 @@ import (
 	"github.com/buildpacks/lifecycle/env"
 	"github.com/buildpacks/lifecycle/launch"
 	platform "github.com/buildpacks/lifecycle/platform/launch"
+	"github.com/google/uuid"
 	"github.com/spf13/cobra"
 
 	builderCli "code.cloudfoundry.org/cnbapplifecycle/cmd/builder/cli"
@@ -23,6 +25,16 @@ func Execute() error {
 	return launcherCmd.Execute()
 }
 
+func findLaunchProcessType(processes []launch.Process, sidecarProcessType string) string {
+	for _, proc := range processes {
+		command := append(proc.Command.Entries, proc.Args...)
+		if strings.Join(os.Args[2:], "") == strings.Join(command, " ") {
+			return proc.Type
+		}
+	}
+	return sidecarProcessType
+}
+
 var launcherCmd = &cobra.Command{
 	Use:          "launcher",
 	SilenceUsage: true,
@@ -30,8 +42,13 @@ var launcherCmd = &cobra.Command{
 		var md launch.Metadata
 		var args []string
 		logger := log.NewLogger()
-		self := defaultProcessType
 		defaultProc := defaultProcessType
+
+		suffix, err := uuid.NewRandom()
+		if err != nil {
+			suffix = uuid.MustParse("foo")
+		}
+		sidecarProcessType := "sidecar-" + suffix.String()
 
 		if _, err := toml.DecodeFile(launch.GetMetadataFilePath(cmd.EnvOrDefault(platform.EnvLayersDir, builderCli.DefaultLayersPath)), &md); err != nil {
 			logger.Errorf("failed decoding, error: %s\n", err.Error())
@@ -43,10 +60,24 @@ var launcherCmd = &cobra.Command{
 			return errors.ErrLaunching
 		}
 
+		detectedProcessType := findLaunchProcessType(md.Processes, sidecarProcessType)
+		logger.Infof("detected process type: '%s'", detectedProcessType)
+		self := detectedProcessType
+		defaultProc = detectedProcessType
+
 		if len(os.Args) > 1 && os.Args[1] == "--" {
 			self = "launcher"
 			args = os.Args[2:]
 			defaultProc = ""
+		}
+
+		if detectedProcessType == sidecarProcessType {
+			md.Processes = append(md.Processes, launch.Process{
+				Type:    self,
+				Command: launch.NewRawCommand([]string{os.Args[2]}),
+				Args:    os.Args[2:],
+				Direct:  false,
+			})
 		}
 
 		launcher := &launch.Launcher{
