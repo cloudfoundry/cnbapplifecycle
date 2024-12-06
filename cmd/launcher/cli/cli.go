@@ -46,7 +46,7 @@ var launcherCmd = &cobra.Command{
 
 		suffix, err := uuid.NewRandom()
 		if err != nil {
-			suffix = uuid.MustParse("foo")
+			suffix = uuid.MustParse("random")
 		}
 		sidecarProcessType := "sidecar-" + suffix.String()
 
@@ -60,24 +60,18 @@ var launcherCmd = &cobra.Command{
 			return errors.ErrLaunching
 		}
 
-		detectedProcessType := findLaunchProcessType(md.Processes, sidecarProcessType)
-		logger.Infof("detected process type: '%s'", detectedProcessType)
-		self := detectedProcessType
-		defaultProc = detectedProcessType
-
+		var self string
+		var detectedProcessType string
+		// Tasks are launched with a "--" prefix
 		if len(os.Args) > 1 && os.Args[1] == "--" {
 			self = "launcher"
 			args = os.Args[2:]
 			defaultProc = ""
-		}
-
-		if detectedProcessType == sidecarProcessType {
-			md.Processes = append(md.Processes, launch.Process{
-				Type:    self,
-				Command: launch.NewRawCommand([]string{os.Args[2]}),
-				Args:    os.Args[2:],
-				Direct:  false,
-			})
+		} else if len(os.Args) > 1 {
+			detectedProcessType = findLaunchProcessType(md.Processes, sidecarProcessType)
+			logger.Infof("detected process type: '%s'", detectedProcessType)
+			self = detectedProcessType
+			defaultProc = detectedProcessType
 		}
 
 		launcher := &launch.Launcher{
@@ -94,9 +88,22 @@ var launcherCmd = &cobra.Command{
 			Setenv:             os.Setenv,
 		}
 
-		if err := launcher.Launch(self, args); err != nil {
-			logger.Errorf("failed launching with self: %q, defaultProc: %q, args: %#v, error: %s\n", self, defaultProc, args, err.Error())
-			return errors.ErrLaunching
+		if detectedProcessType == sidecarProcessType {
+			process := launch.Process{
+				Type:    sidecarProcessType,
+				Command: launch.NewRawCommand([]string{os.Args[2]}),
+				Args:    os.Args[2:],
+				Direct:  false,
+			}
+			if err := launcher.LaunchProcess(self, process); err != nil {
+				logger.Errorf("failed launching process %q, args: %#v, with self %q, error: %s\n", process.Command, process.Args, self, err.Error())
+				return errors.ErrLaunching
+			}
+		} else {
+			if err := launcher.Launch(self, args); err != nil {
+				logger.Errorf("failed launching with self: %q, defaultProc: %q, args: %#v, error: %s\n", self, defaultProc, args, err.Error())
+				return errors.ErrLaunching
+			}
 		}
 
 		return nil

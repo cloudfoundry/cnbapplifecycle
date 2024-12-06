@@ -294,6 +294,17 @@ var _ = Describe("Lifecycle", func() {
 				return fetch(fmt.Sprintf("http://127.0.0.1:%s", port.Port()))
 			}).WithTimeout(10 * time.Second).Should(Equal("Greetings from Spring Boot!"))
 		})
+
+		By("running a sidecar", func() {
+			Expect(testContainer.CopyFileToContainer(context.Background(), "testdata/workspace/sidecar.sh", "/home/ubuntu/workspace/sidecar.sh", 0o755)).To(Succeed())
+			buf := bytes.NewBufferString("")
+			_, out, err := testContainer.Exec(context.Background(), []string{"/tmp/launcher", "web", "./sidecar.sh"}, exec.WithUser("ubuntu"))
+
+			_, copyErr := io.Copy(buf, out)
+			Expect(copyErr).To(BeNil())
+			Expect(buf.String()).To(ContainSubstring("sidecar is running"))
+			Expect(err).To(BeNil())
+		})
 	})
 
 	AfterEach(func() {
