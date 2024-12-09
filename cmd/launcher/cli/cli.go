@@ -2,6 +2,7 @@ package cli
 
 import (
 	"os"
+	"strings"
 
 	"github.com/BurntSushi/toml"
 	"github.com/buildpacks/lifecycle/api"
@@ -23,6 +24,17 @@ func Execute() error {
 	return launcherCmd.Execute()
 }
 
+func findLaunchProcessType(processes []launch.Process) (string, bool) {
+	expectedCmd := strings.Join(os.Args[2:], "")
+	for _, proc := range processes {
+		command := append(proc.Command.Entries, proc.Args...)
+		if expectedCmd == strings.Join(command, " ") {
+			return proc.Type, false
+		}
+	}
+	return "", true
+}
+
 var launcherCmd = &cobra.Command{
 	Use:          "launcher",
 	SilenceUsage: true,
@@ -30,7 +42,6 @@ var launcherCmd = &cobra.Command{
 		var md launch.Metadata
 		var args []string
 		logger := log.NewLogger()
-		self := defaultProcessType
 		defaultProc := defaultProcessType
 
 		if _, err := toml.DecodeFile(launch.GetMetadataFilePath(cmd.EnvOrDefault(platform.EnvLayersDir, builderCli.DefaultLayersPath)), &md); err != nil {
@@ -43,10 +54,17 @@ var launcherCmd = &cobra.Command{
 			return errors.ErrLaunching
 		}
 
+		var self string
+		var isSidecar bool
+		// Tasks are launched with a "--" prefix, all other processes are launched with "app"
 		if len(os.Args) > 1 && os.Args[1] == "--" {
 			self = "launcher"
 			args = os.Args[2:]
 			defaultProc = ""
+		} else if len(os.Args) > 1 {
+			self, isSidecar = findLaunchProcessType(md.Processes)
+			logger.Infof("Detected process type: %q, isSidecar: %v", self, isSidecar)
+			defaultProc = self
 		}
 
 		launcher := &launch.Launcher{
@@ -63,9 +81,22 @@ var launcherCmd = &cobra.Command{
 			Setenv:             os.Setenv,
 		}
 
-		if err := launcher.Launch(self, args); err != nil {
-			logger.Errorf("failed launching with self: %q, defaultProc: %q, args: %#v, error: %s\n", self, defaultProc, args, err.Error())
-			return errors.ErrLaunching
+		if isSidecar {
+			process := launch.Process{
+				Type:    "sidecar",
+				Command: launch.NewRawCommand([]string{os.Args[2]}),
+				Args:    os.Args[2:],
+				Direct:  true,
+			}
+			if err := launcher.LaunchProcess(self, process); err != nil {
+				logger.Errorf("failed launching process %q, args: %#v, with self %q, error: %s\n", process.Command, process.Args, self, err.Error())
+				return errors.ErrLaunching
+			}
+		} else {
+			if err := launcher.Launch(self, args); err != nil {
+				logger.Errorf("failed launching with self: %q, defaultProc: %q, args: %#v, error: %s\n", self, defaultProc, args, err.Error())
+				return errors.ErrLaunching
+			}
 		}
 
 		return nil
