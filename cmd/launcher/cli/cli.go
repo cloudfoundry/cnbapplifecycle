@@ -11,7 +11,6 @@ import (
 	"github.com/buildpacks/lifecycle/env"
 	"github.com/buildpacks/lifecycle/launch"
 	platform "github.com/buildpacks/lifecycle/platform/launch"
-	"github.com/google/uuid"
 	"github.com/spf13/cobra"
 
 	builderCli "code.cloudfoundry.org/cnbapplifecycle/cmd/builder/cli"
@@ -25,14 +24,15 @@ func Execute() error {
 	return launcherCmd.Execute()
 }
 
-func findLaunchProcessType(processes []launch.Process, sidecarProcessType string) string {
+func findLaunchProcessType(processes []launch.Process) (string, bool) {
+	expectedCmd := strings.Join(os.Args[2:], "")
 	for _, proc := range processes {
 		command := append(proc.Command.Entries, proc.Args...)
-		if strings.Join(os.Args[2:], "") == strings.Join(command, " ") {
-			return proc.Type
+		if expectedCmd == strings.Join(command, " ") {
+			return proc.Type, false
 		}
 	}
-	return sidecarProcessType
+	return "", true
 }
 
 var launcherCmd = &cobra.Command{
@@ -43,12 +43,6 @@ var launcherCmd = &cobra.Command{
 		var args []string
 		logger := log.NewLogger()
 		defaultProc := defaultProcessType
-
-		suffix, err := uuid.NewRandom()
-		if err != nil {
-			suffix = uuid.MustParse("random")
-		}
-		sidecarProcessType := "sidecar-" + suffix.String()
 
 		if _, err := toml.DecodeFile(launch.GetMetadataFilePath(cmd.EnvOrDefault(platform.EnvLayersDir, builderCli.DefaultLayersPath)), &md); err != nil {
 			logger.Errorf("failed decoding, error: %s\n", err.Error())
@@ -61,17 +55,16 @@ var launcherCmd = &cobra.Command{
 		}
 
 		var self string
-		var detectedProcessType string
-		// Tasks are launched with a "--" prefix
+		var isSidecar bool
+		// Tasks are launched with a "--" prefix, all other processes are launched with "app"
 		if len(os.Args) > 1 && os.Args[1] == "--" {
 			self = "launcher"
 			args = os.Args[2:]
 			defaultProc = ""
 		} else if len(os.Args) > 1 {
-			detectedProcessType = findLaunchProcessType(md.Processes, sidecarProcessType)
-			logger.Infof("detected process type: '%s'", detectedProcessType)
-			self = detectedProcessType
-			defaultProc = detectedProcessType
+			self, isSidecar = findLaunchProcessType(md.Processes)
+			logger.Infof("Detected process type: %q, isSidecar: %v", self, isSidecar)
+			defaultProc = self
 		}
 
 		launcher := &launch.Launcher{
@@ -88,12 +81,12 @@ var launcherCmd = &cobra.Command{
 			Setenv:             os.Setenv,
 		}
 
-		if detectedProcessType == sidecarProcessType {
+		if isSidecar {
 			process := launch.Process{
-				Type:    sidecarProcessType,
+				Type:    "sidecar",
 				Command: launch.NewRawCommand([]string{os.Args[2]}),
 				Args:    os.Args[2:],
-				Direct:  false,
+				Direct:  true,
 			}
 			if err := launcher.LaunchProcess(self, process); err != nil {
 				logger.Errorf("failed launching process %q, args: %#v, with self %q, error: %s\n", process.Command, process.Args, self, err.Error())

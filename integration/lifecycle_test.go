@@ -298,7 +298,7 @@ var _ = Describe("Lifecycle", func() {
 		By("running a sidecar", func() {
 			Expect(testContainer.CopyFileToContainer(context.Background(), "testdata/workspace/sidecar.sh", "/home/ubuntu/workspace/sidecar.sh", 0o755)).To(Succeed())
 			buf := bytes.NewBufferString("")
-			_, out, err := testContainer.Exec(context.Background(), []string{"/tmp/launcher", "web", "./sidecar.sh"}, exec.WithUser("ubuntu"))
+			_, out, err := testContainer.Exec(context.Background(), []string{"/tmp/launcher", "app", "./sidecar.sh"}, exec.WithUser("ubuntu"))
 
 			_, copyErr := io.Copy(buf, out)
 			Expect(copyErr).To(BeNil())
