@@ -1,0 +1,50 @@
+buildpack-default-process-type = "web"
+
+
+[[buildpacks]]
+  id = "paketo-buildpacks/ca-certificates"
+  version = "3.8.6"
+  api = "0.7"
+
+[[buildpacks]]
+  id = "paketo-buildpacks/cpython"
+  version = "1.13.16"
+  api = "0.7"
+
+[[buildpacks]]
+  id = "paketo-buildpacks/pip"
+  version = "0.22.1"
+  api = "0.7"
+
+[[buildpacks]]
+  id = "paketo-buildpacks/pip-install"
+  version = "0.6.6"
+  api = "0.7"
+
+[[buildpacks]]
+  id = "paketo-buildpacks/python-start"
+  version = "0.14.19"
+  api = "0.7"
+
+[[buildpacks]]
+  id = "paketo-buildpacks/procfile"
+  version = "5.10.1"
+  api = "0.7"
+
+[[processes]]
+  type = "web"
+  command = ["python app.py"]
+  args = []
+  direct = false
+  buildpack-id = "paketo-buildpacks/procfile"
+
+[[processes]]
+  type = "web2"
+  command = ["PORT=9876 python app.py"]
+  args = []
+  direct = false
+  buildpack-id = "paketo-buildpacks/procfile"
+
+
+
+
