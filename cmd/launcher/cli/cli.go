@@ -2,6 +2,7 @@ package cli
 
 import (
 	"os"
+	"slices"
 	"strings"
 
 	"github.com/BurntSushi/toml"
@@ -18,7 +19,10 @@ import (
 	"code.cloudfoundry.org/cnbapplifecycle/pkg/log"
 )
 
-const defaultProcessType = "web"
+const (
+	defaultProcessType  = "web"
+	launcherProcessType = "launcher"
+)
 
 func Execute() error {
 	return launcherCmd.Execute()
@@ -31,7 +35,8 @@ func findLaunchProcessType(processes []launch.Process, expectedCmd string) (stri
 			return proc.Type, false
 		}
 	}
-	return "", true
+
+	return launcherProcessType, true
 }
 
 var launcherCmd = &cobra.Command{
@@ -57,6 +62,10 @@ func Launch(osArgs []string, theLauncher TheLauncher) error {
 	logger := log.NewLogger()
 	defaultProc := defaultProcessType
 
+	osArgs = slices.DeleteFunc(osArgs, func(s string) bool {
+		return s == ""
+	})
+
 	if _, err := toml.DecodeFile(launch.GetMetadataFilePath(cmd.EnvOrDefault(platform.EnvLayersDir, builderCli.DefaultLayersPath)), &md); err != nil {
 		logger.Errorf("failed decoding, error: %s\n", err.Error())
 		return errors.ErrLaunching
@@ -69,15 +78,22 @@ func Launch(osArgs []string, theLauncher TheLauncher) error {
 
 	var self string
 	var isSidecar bool
-	// Tasks are launched with a "--" prefix, all other processes are launched with "app"
-	if len(osArgs) > 1 && osArgs[1] == "--" {
-		self = "launcher"
-		args = osArgs[2:]
+	if len(osArgs) > 1 {
 		defaultProc = ""
-	} else if len(osArgs) > 1 {
-		self, isSidecar = findLaunchProcessType(md.Processes, strings.Join(osArgs[2:], ""))
-		logger.Infof("Detected process type: %q, isSidecar: %v", self, isSidecar)
-		defaultProc = self
+		args = osArgs[2:]
+
+		// Tasks are launched with a "--" prefix, all other processes are launched with "app"
+		if osArgs[1] == "--" {
+			self = launcherProcessType
+		} else {
+			self, isSidecar = findLaunchProcessType(md.Processes, strings.Join(osArgs[2:], " "))
+			logger.Infof("Detected process type: %q, isSidecar: %v", self, isSidecar)
+
+			if !isSidecar {
+				defaultProc = self
+				args = nil
+			}
+		}
 	}
 
 	launcher := &launch.Launcher{
@@ -94,28 +110,9 @@ func Launch(osArgs []string, theLauncher TheLauncher) error {
 		Setenv:             os.Setenv,
 	}
 
-	if isSidecar {
-		var args []string
-		if len(osArgs) > 3 {
-			args = osArgs[3:]
-		} else {
-			args = []string{}
-		}
-		process := launch.Process{
-			Type:    "sidecar",
-			Command: launch.NewRawCommand([]string{osArgs[2]}),
-			Args:    args,
-			Direct:  false,
-		}
-		if err := theLauncher.LaunchProcess(launcher, self, process); err != nil {
-			logger.Errorf("failed launching process %q, args: %#v, with self %q, error: %s\n", process.Command, process.Args, self, err.Error())
-			return errors.ErrLaunching
-		}
-	} else {
-		if err := theLauncher.Launch(launcher, self, args); err != nil {
-			logger.Errorf("failed launching with self: %q, defaultProc: %q, args: %#v, error: %s\n", self, defaultProc, args, err.Error())
-			return errors.ErrLaunching
-		}
+	if err := theLauncher.Launch(launcher, self, args); err != nil {
+		logger.Errorf("failed launching with self: %q, defaultProc: %q, args: %#v, error: %s\n", self, defaultProc, args, err.Error())
+		return errors.ErrLaunching
 	}
 
 	return nil

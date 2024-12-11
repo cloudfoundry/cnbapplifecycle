@@ -41,10 +41,6 @@ buildpack-default-process-type = "web"
 [[processes]]
   type = "web2"
   command = ["PORT=9876 python app.py"]
-  args = []
+  args = ["--verbose"]
   direct = false
   buildpack-id = "paketo-buildpacks/procfile"
-
-
-
-
