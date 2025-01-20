@@ -5,7 +5,7 @@ go 1.23
 require (
 	github.com/BurntSushi/toml v1.4.0
 	github.com/apex/log v1.9.0
-	github.com/buildpacks/lifecycle v0.20.4
+	github.com/buildpacks/lifecycle v0.20.5
 	github.com/buildpacks/pack v0.36.4
 	github.com/cespare/xxhash/v2 v2.3.0
 	github.com/docker/docker v27.4.1+incompatible
