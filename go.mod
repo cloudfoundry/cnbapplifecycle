@@ -11,7 +11,7 @@ require (
 	github.com/docker/docker v27.4.1+incompatible
 	github.com/google/go-containerregistry v0.20.2
 	github.com/jarcoal/httpmock v1.3.1
-	github.com/onsi/ginkgo/v2 v2.22.1
+	github.com/onsi/ginkgo/v2 v2.22.2
 	github.com/onsi/gomega v1.36.2
 	github.com/spf13/cobra v1.8.1
 	github.com/testcontainers/testcontainers-go v0.34.0
