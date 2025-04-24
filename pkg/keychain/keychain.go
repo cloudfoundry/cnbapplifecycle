@@ -17,7 +17,7 @@ type auth struct {
 }
 
 func (a auth) config() (authn.AuthConfig, error) {
-	if !((a.Username != "" && a.Password != "" && a.Token == "") || (a.Token != "" && a.Username == "" && a.Password == "")) {
+	if (a.Username == "" || a.Password == "" || a.Token != "") && (a.Token == "" || a.Username != "" || a.Password != "") {
 		return authn.AuthConfig{}, errors.New("invalid credential combination")
 	}
 

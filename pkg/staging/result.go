@@ -37,7 +37,7 @@ func StagingResultFromMetadata(buildMeta *files.BuildMetadata) *StagingResult {
 	}
 
 	for _, buildpack := range buildMeta.Buildpacks {
-		result.LifecycleMetadata.Buildpacks = append(result.LifecycleMetadata.Buildpacks, BuildpackMetadata{
+		result.Buildpacks = append(result.Buildpacks, BuildpackMetadata{
 			ID:      buildpack.ID,
 			Name:    buildpack.String(),
 			Version: buildpack.Version,
