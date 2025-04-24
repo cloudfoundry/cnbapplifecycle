@@ -4,6 +4,10 @@ build:
 test:
 	go test -count=1 ./...
 
+lint:
+	go tool golangci-lint fmt ./... --diff
+	go tool golangci-lint run ./... --default none --enable govet,staticcheck,unused
+
 integration: build
 	INCLUDE_INTEGRATION_TESTS=true go test -v -count=1 ./integration --ginkgo.label-filter integration -ginkgo.v
 

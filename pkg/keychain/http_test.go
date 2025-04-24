@@ -85,7 +85,8 @@ var _ = Describe("HTTP RoundTripper", func() {
 				Expect(res.StatusCode).To(Equal(http.StatusOK))
 
 				body := bytes.NewBuffer(nil)
-				io.Copy(body, res.Body)
+				_, err = io.Copy(body, res.Body)
+				Expect(err).ToNot(HaveOccurred())
 				Expect(body.String()).To(Equal("Bearer foo"))
 			})
 
@@ -105,7 +106,8 @@ var _ = Describe("HTTP RoundTripper", func() {
 				Expect(res.StatusCode).To(Equal(http.StatusOK))
 
 				body := bytes.NewBuffer(nil)
-				io.Copy(body, res.Body)
+				_, err = io.Copy(body, res.Body)
+				Expect(err).ToNot(HaveOccurred())
 				Expect(body.String()).To(Equal("Basic Zm9vOmJhcg=="))
 			})
 		})
