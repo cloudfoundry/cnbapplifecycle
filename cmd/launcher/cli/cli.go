@@ -4,6 +4,7 @@ import (
 	"os"
 	"slices"
 	"strings"
+	"time"
 
 	"github.com/BurntSushi/toml"
 	"github.com/buildpacks/lifecycle/api"
@@ -15,6 +16,7 @@ import (
 	"github.com/spf13/cobra"
 
 	builderCli "code.cloudfoundry.org/cnbapplifecycle/cmd/builder/cli"
+	"code.cloudfoundry.org/cnbapplifecycle/pkg/credhub"
 	"code.cloudfoundry.org/cnbapplifecycle/pkg/errors"
 	"code.cloudfoundry.org/cnbapplifecycle/pkg/log"
 )
@@ -24,8 +26,18 @@ const (
 	launcherProcessType = "launcher"
 )
 
+var (
+	credhubConnectionAttempts int
+	credhubRetryDelay         time.Duration
+)
+
 func Execute() error {
 	return launcherCmd.Execute()
+}
+
+func init() {
+	launcherCmd.Flags().IntVar(&credhubConnectionAttempts, "credhub-connection-attempts", 3, "number of times that the credhub client will attempt to connect to credhub")
+	launcherCmd.Flags().DurationVar(&credhubRetryDelay, "credhub-retry-delay", 1*time.Second, "delay duration that credhub client will wait before retries (ex. 1s, 2m, etc.)")
 }
 
 func findLaunchProcessType(processes []launch.Process, expectedCmd string) (string, bool) {
@@ -73,6 +85,11 @@ func Launch(osArgs []string, theLauncher TheLauncher) error {
 
 	if err := verifyBuildpackAPIs(md.Buildpacks); err != nil {
 		logger.Errorf("failed verifying buildpack API, error: %s\n", err.Error())
+		return errors.ErrLaunching
+	}
+
+	if err := credhub.InterpolateServiceRefs(credhubConnectionAttempts, credhubRetryDelay); err != nil {
+		logger.Error(err.Error())
 		return errors.ErrLaunching
 	}
 
