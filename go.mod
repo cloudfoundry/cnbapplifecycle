@@ -11,9 +11,9 @@ require (
 	github.com/BurntSushi/toml v1.5.0
 	github.com/apex/log v1.9.0
 	github.com/buildpacks/lifecycle v0.20.8
-	github.com/buildpacks/pack v0.36.4
+	github.com/buildpacks/pack v0.37.0
 	github.com/cespare/xxhash/v2 v2.3.0
-	github.com/docker/docker v27.5.0+incompatible
+	github.com/docker/docker v27.5.1+incompatible
 	github.com/google/go-containerregistry v0.20.3
 	github.com/jarcoal/httpmock v1.3.1
 	github.com/onsi/ginkgo/v2 v2.23.4
@@ -109,7 +109,7 @@ require (
 	github.com/dimchansky/utfbom v1.1.1 // indirect
 	github.com/distribution/reference v0.6.0 // indirect
 	github.com/dlclark/regexp2 v1.11.5 // indirect
-	github.com/docker/cli v27.5.0+incompatible // indirect
+	github.com/docker/cli v27.5.1+incompatible // indirect
 	github.com/docker/distribution v2.8.3+incompatible // indirect
 	github.com/docker/docker-credential-helpers v0.8.2 // indirect
 	github.com/docker/go-connections v0.5.0 // indirect
