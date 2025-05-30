@@ -4,6 +4,16 @@
 # 4d63.com/gochecknoglobals v0.2.2
 ## explicit; go 1.18
 4d63.com/gochecknoglobals/checknoglobals
+# code.cloudfoundry.org/credhub-cli v0.0.0-20250505130841-11f3a43db498
+## explicit; go 1.23.0
+code.cloudfoundry.org/credhub-cli/credhub
+code.cloudfoundry.org/credhub-cli/credhub/auth
+code.cloudfoundry.org/credhub-cli/credhub/auth/uaa
+code.cloudfoundry.org/credhub-cli/credhub/credentials
+code.cloudfoundry.org/credhub-cli/credhub/credentials/generate
+code.cloudfoundry.org/credhub-cli/credhub/credentials/values
+code.cloudfoundry.org/credhub-cli/credhub/permissions
+code.cloudfoundry.org/credhub-cli/credhub/server
 # dario.cat/mergo v1.0.0
 ## explicit; go 1.13
 dario.cat/mergo
@@ -371,6 +381,12 @@ github.com/chrismellard/docker-credential-acr-env/pkg/token
 # github.com/ckaznocha/intrange v0.3.1
 ## explicit; go 1.23.0
 github.com/ckaznocha/intrange
+# github.com/cloudfoundry/go-socks5 v0.0.0-20250423223041-4ad5fea42851
+## explicit; go 1.21.0
+github.com/cloudfoundry/go-socks5
+# github.com/cloudfoundry/socks5-proxy v0.2.150
+## explicit; go 1.23.0
+github.com/cloudfoundry/socks5-proxy
 # github.com/containerd/log v0.1.0
 ## explicit; go 1.20
 github.com/containerd/log
@@ -807,8 +823,8 @@ github.com/google/go-containerregistry/pkg/v1/stream
 github.com/google/go-containerregistry/pkg/v1/tarball
 github.com/google/go-containerregistry/pkg/v1/types
 github.com/google/go-containerregistry/pkg/v1/validate
-# github.com/google/pprof v0.0.0-20250403155104-27863c87afa6
-## explicit; go 1.23
+# github.com/google/pprof v0.0.0-20250501235452-c0086092b71a
+## explicit; go 1.23.0
 github.com/google/pprof/profile
 # github.com/google/uuid v1.6.0
 ## explicit
@@ -1082,10 +1098,11 @@ github.com/onsi/ginkgo/v2/internal/parallel_support
 github.com/onsi/ginkgo/v2/internal/testingtproxy
 github.com/onsi/ginkgo/v2/reporters
 github.com/onsi/ginkgo/v2/types
-# github.com/onsi/gomega v1.36.3
+# github.com/onsi/gomega v1.37.0
 ## explicit; go 1.23.0
 github.com/onsi/gomega
 github.com/onsi/gomega/format
+github.com/onsi/gomega/ghttp
 github.com/onsi/gomega/internal
 github.com/onsi/gomega/internal/gutil
 github.com/onsi/gomega/matchers
@@ -1453,14 +1470,17 @@ golang.org/x/mod/module
 golang.org/x/mod/semver
 # golang.org/x/net v0.39.0
 ## explicit; go 1.23.0
+golang.org/x/net/context
 golang.org/x/net/html
 golang.org/x/net/html/atom
 golang.org/x/net/html/charset
+golang.org/x/net/internal/socks
+golang.org/x/net/proxy
 # golang.org/x/sync v0.13.0
 ## explicit; go 1.23.0
 golang.org/x/sync/errgroup
 golang.org/x/sync/semaphore
-# golang.org/x/sys v0.32.0
+# golang.org/x/sys v0.33.0
 ## explicit; go 1.23.0
 golang.org/x/sys/cpu
 golang.org/x/sys/plan9
@@ -1610,6 +1630,7 @@ google.golang.org/protobuf/internal/set
 google.golang.org/protobuf/internal/strs
 google.golang.org/protobuf/internal/version
 google.golang.org/protobuf/proto
+google.golang.org/protobuf/protoadapt
 google.golang.org/protobuf/reflect/protoreflect
 google.golang.org/protobuf/reflect/protoregistry
 google.golang.org/protobuf/runtime/protoiface

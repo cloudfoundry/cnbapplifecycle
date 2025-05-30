@@ -1,11 +1,13 @@
 module code.cloudfoundry.org/cnbapplifecycle
 
-go 1.23.0
+go 1.24
+
 toolchain go1.24.2
 
 tool github.com/golangci/golangci-lint/v2/cmd/golangci-lint
 
 require (
+	code.cloudfoundry.org/credhub-cli v0.0.0-20250505130841-11f3a43db498
 	github.com/BurntSushi/toml v1.5.0
 	github.com/apex/log v1.9.0
 	github.com/buildpacks/lifecycle v0.20.8
@@ -15,7 +17,7 @@ require (
 	github.com/google/go-containerregistry v0.20.3
 	github.com/jarcoal/httpmock v1.3.1
 	github.com/onsi/ginkgo/v2 v2.23.4
-	github.com/onsi/gomega v1.36.3
+	github.com/onsi/gomega v1.37.0
 	github.com/spf13/cobra v1.9.1
 	github.com/testcontainers/testcontainers-go v0.34.0
 )
@@ -92,6 +94,8 @@ require (
 	github.com/chavacava/garif v0.1.0 // indirect
 	github.com/chrismellard/docker-credential-acr-env v0.0.0-20230304212654-82a0ddb27589 // indirect
 	github.com/ckaznocha/intrange v0.3.1 // indirect
+	github.com/cloudfoundry/go-socks5 v0.0.0-20250423223041-4ad5fea42851 // indirect
+	github.com/cloudfoundry/socks5-proxy v0.2.150 // indirect
 	github.com/containerd/log v0.1.0 // indirect
 	github.com/containerd/platforms v0.2.1 // indirect
 	github.com/containerd/stargz-snapshotter/estargz v0.16.3 // indirect
@@ -147,7 +151,7 @@ require (
 	github.com/golangci/revgrep v0.8.0 // indirect
 	github.com/golangci/unconvert v0.0.0-20250410112200-a129a6e6413e // indirect
 	github.com/google/go-cmp v0.7.0 // indirect
-	github.com/google/pprof v0.0.0-20250403155104-27863c87afa6 // indirect
+	github.com/google/pprof v0.0.0-20250501235452-c0086092b71a // indirect
 	github.com/google/uuid v1.6.0 // indirect
 	github.com/gordonklaus/ineffassign v0.1.0 // indirect
 	github.com/gorilla/mux v1.8.0 // indirect
@@ -289,7 +293,7 @@ require (
 	golang.org/x/mod v0.24.0 // indirect
 	golang.org/x/net v0.39.0 // indirect
 	golang.org/x/sync v0.13.0 // indirect
-	golang.org/x/sys v0.32.0 // indirect
+	golang.org/x/sys v0.33.0 // indirect
 	golang.org/x/term v0.31.0 // indirect
 	golang.org/x/text v0.24.0 // indirect
 	golang.org/x/tools v0.32.0 // indirect

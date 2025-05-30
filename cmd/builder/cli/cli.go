@@ -8,9 +8,11 @@ import (
 	"os"
 	"path/filepath"
 	"runtime"
+	"time"
 
 	"code.cloudfoundry.org/cnbapplifecycle/pkg/archive"
 	"code.cloudfoundry.org/cnbapplifecycle/pkg/buildpacks"
+	"code.cloudfoundry.org/cnbapplifecycle/pkg/credhub"
 	"code.cloudfoundry.org/cnbapplifecycle/pkg/errors"
 	"code.cloudfoundry.org/cnbapplifecycle/pkg/keychain"
 	"code.cloudfoundry.org/cnbapplifecycle/pkg/log"
@@ -38,21 +40,23 @@ const (
 )
 
 var (
-	layersDir           string
-	workspaceDir        string
-	cacheDir            string
-	cacheOutputFile     string
-	result              string
-	dropletFile         string
-	buildpackList       []string
-	envVarNames         []string
-	autoDetect          bool
-	platformDir         string
-	buildpacksDir       string
-	systemBuildpacksDir string
-	extensionsDir       string
-	downloadCacheDir    string
-	err                 error
+	layersDir                 string
+	workspaceDir              string
+	cacheDir                  string
+	cacheOutputFile           string
+	result                    string
+	dropletFile               string
+	buildpackList             []string
+	envVarNames               []string
+	autoDetect                bool
+	platformDir               string
+	buildpacksDir             string
+	systemBuildpacksDir       string
+	extensionsDir             string
+	downloadCacheDir          string
+	err                       error
+	credhubConnectionAttempts int
+	credhubRetryDelay         time.Duration
 )
 
 func Execute() error {
@@ -70,6 +74,8 @@ func init() {
 	builderCmd.Flags().StringVarP(&cacheDir, "cache-dir", "c", "/tmp/cache", "cache dir")
 	builderCmd.Flags().StringVarP(&cacheOutputFile, "cache-output", "", "/tmp/cache-output.tgz", "cache output")
 	builderCmd.Flags().BoolVar(&autoDetect, "auto-detect", false, "run auto-detection with the provided buildpacks")
+	builderCmd.Flags().IntVar(&credhubConnectionAttempts, "credhub-connection-attempts", 3, "number of times that the credhub client will attempt to connect to credhub")
+	builderCmd.Flags().DurationVar(&credhubRetryDelay, "credhub-retry-delay", 1*time.Second, "delay duration that credhub client will wait before retries (ex. 1s, 2m, etc.)")
 	_ = builderCmd.MarkFlagRequired("buildpack")
 }
 
@@ -85,6 +91,11 @@ var builderCmd = &cobra.Command{
 		if err := logger.SetLevel(inputs.LogLevel); err != nil {
 			logger.Errorf("failed to set log level to %q, error: %s\n", inputs.LogLevel, err.Error())
 			return errors.ErrGenericBuild
+		}
+
+		if err := credhub.InterpolateServiceRefs(credhubConnectionAttempts, credhubRetryDelay); err != nil {
+			logger.Error(err.Error())
+			return errors.ErrLaunching
 		}
 
 		tempDirs := map[string]*string{
