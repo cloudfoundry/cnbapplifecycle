@@ -279,6 +279,8 @@ var builderCmd = &cobra.Command{
 			return errors.ErrExporting
 		}
 
+		ensureWebProcessType(buildMeta)
+
 		resultData := staging.StagingResultFromMetadata(buildMeta)
 		resultBytes, err := json.Marshal(resultData)
 		if err != nil {
@@ -327,4 +329,26 @@ func writeAnalyzed(path string, logger *log.Logger) (files.Analyzed, error) {
 	}
 
 	return analyzed, files.Handler.WriteAnalyzed(path, &analyzed, logger)
+}
+
+// cloudfoundry expects a web process type to exist
+// this will create a web process type identical to the default process type set by the buildpack if one does not exist
+func ensureWebProcessType(buildMeta *files.BuildMetadata) {
+	var defaultProcess launch.Process
+	hasWebProcessType := false
+	for _, process := range buildMeta.Processes {
+
+		if process.Type == "web" {
+			hasWebProcessType = true
+			break
+		}
+
+		if process.Type == buildMeta.BuildpackDefaultProcessType {
+			defaultProcess = process
+		}
+	}
+	if !hasWebProcessType && defaultProcess.Type != "" {
+		defaultProcess.Type = "web"
+		buildMeta.Processes = append(buildMeta.Processes, defaultProcess)
+	}
 }

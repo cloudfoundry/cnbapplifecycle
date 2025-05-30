@@ -7,6 +7,7 @@ import (
 	"fmt"
 	"io"
 	"net/http"
+	"path/filepath"
 	"strings"
 	"time"
 
@@ -59,59 +60,7 @@ var _ = Describe("Lifecycle", func() {
 				"CNB_NO_COLOR":   "true",
 				"BP_JVM_VERSION": "17",
 			},
-			LifecycleHooks: []testcontainers.ContainerLifecycleHooks{
-				{
-					PostStarts: []testcontainers.ContainerHook{
-						func(ctx context.Context, container testcontainers.Container) error {
-							code, _, err := container.Exec(ctx, []string{"apt", "update"})
-							if code != 0 {
-								return fmt.Errorf("failed to run apt update, RC: %d", code)
-							}
-
-							return err
-						},
-						func(ctx context.Context, container testcontainers.Container) error {
-							code, _, err := container.Exec(ctx, []string{"apt", "install", "ca-certificates", "skopeo", "-y"})
-							if code != 0 {
-								return fmt.Errorf("failed to run install ca-certificates, RC: %d", code)
-							}
-
-							return err
-						},
-						func(ctx context.Context, container testcontainers.Container) error {
-							if err := container.CopyFileToContainer(ctx, "../bin/builder", "/tmp/builder", 0o755); err != nil {
-								return err
-							}
-
-							if err := container.CopyFileToContainer(ctx, "../bin/launcher", "/tmp/launcher", 0o755); err != nil {
-								return err
-							}
-
-							if err := container.CopyDirToContainer(ctx, "./testdata/workspace", "/home/ubuntu/", 0o755); err != nil {
-								return err
-							}
-
-							if err := runInContainer(ctx, container, "chown", "-R", "ubuntu:ubuntu", "/home/ubuntu/workspace"); err != nil {
-								return err
-							}
-
-							if err := runInContainer(ctx, container, "mkdir", "-p", "/tmp/buildpacks"); err != nil {
-								return err
-							}
-
-							if err := runInContainer(ctx, container, "skopeo", "copy", "docker://gcr.io/paketo-buildpacks/java:latest", "oci:/tmp/buildpacks/10bfa3ba0b8af13e"); err != nil {
-								return err
-							}
-
-							if err := runInContainer(ctx, container, "chown", "-R", "ubuntu:ubuntu", "/tmp/buildpacks"); err != nil {
-								return err
-							}
-
-							return err
-						},
-					},
-				},
-			},
+			LifecycleHooks: []testcontainers.ContainerLifecycleHooks{{PostStarts: append(defaultContainerSetup(), prepareContainerWorkspace("./testdata/workspace/", "java"))}},
 		}
 		testContainer, err = testcontainers.GenericContainer(context.Background(), testcontainers.GenericContainerRequest{
 			ContainerRequest: req,
@@ -131,6 +80,7 @@ var _ = Describe("Lifecycle", func() {
 			"--pass-env-var", "BP_JVM_VERSION",
 		}, exec.WithUser("ubuntu"))
 		Expect(err).To(BeNil())
+		assertExitCode(code, 0, out)
 
 		buf := bytes.NewBufferString("")
 		_, err = io.Copy(buf, out)
@@ -145,8 +95,6 @@ var _ = Describe("Lifecycle", func() {
 		Expect(outString).To(ContainSubstring("Builder ran for"))
 		Expect(outString).To(ContainSubstring("result file saved to"))
 		Expect(outString).To(ContainSubstring("droplet archive saved to"))
-
-		Expect(code).To(Equal(0))
 
 		r, err := testContainer.CopyFileFromContainer(context.Background(), "/tmp/build-result.json")
 		Expect(err).To(BeNil())
@@ -179,6 +127,7 @@ var _ = Describe("Lifecycle", func() {
 				"--pass-env-var", "BP_JVM_VERSION",
 			}, exec.WithUser("ubuntu"))
 			Expect(err).To(BeNil())
+			assertExitCode(code, 0, out)
 
 			buf := bytes.NewBufferString("")
 			_, err = io.Copy(buf, out)
@@ -193,7 +142,6 @@ var _ = Describe("Lifecycle", func() {
 			Expect(outString).To(ContainSubstring("Builder ran for"))
 			Expect(outString).To(ContainSubstring("result file saved to"))
 			Expect(outString).To(ContainSubstring("droplet archive saved to"))
-			Expect(code).To(Equal(0))
 
 			r, err := testContainer.CopyFileFromContainer(context.Background(), "/tmp/build-result.json")
 			Expect(err).To(BeNil())
@@ -215,30 +163,30 @@ var _ = Describe("Lifecycle", func() {
 		})
 
 		By("building it again with cache", func() {
-			code, _, err := testContainer.Exec(context.Background(), []string{
+			code, out, err := testContainer.Exec(context.Background(), []string{
 				"rm", "-rf", "/home/ubuntu/layers",
 			}, exec.WithUser("ubuntu"))
-			Expect(code).To(Equal(0))
 			Expect(err).To(BeNil())
+			assertExitCode(code, 0, out)
 
-			code, _, err = testContainer.Exec(context.Background(), []string{
+			code, out, err = testContainer.Exec(context.Background(), []string{
 				"rm", "-rf", "/home/ubuntu/workspace",
 			}, exec.WithUser("ubuntu"))
-			Expect(code).To(Equal(0))
 			Expect(err).To(BeNil())
+			assertExitCode(code, 0, out)
 
-			code, _, err = testContainer.Exec(context.Background(), []string{
+			code, out, err = testContainer.Exec(context.Background(), []string{
 				"rm", "-rf", "/tmp/buildpacks",
 			}, exec.WithUser("ubuntu"))
-			Expect(code).To(Equal(0))
 			Expect(err).To(BeNil())
+			assertExitCode(code, 0, out)
 
 			Expect(testContainer.CopyDirToContainer(context.Background(), "testdata/workspace", "/home/ubuntu/", 0o755)).To(Succeed())
-			code, _, err = testContainer.Exec(context.Background(), []string{"chown", "-R", "ubuntu:ubuntu", "/home/ubuntu/workspace"})
-			Expect(code).To(Equal(0))
+			code, out, err = testContainer.Exec(context.Background(), []string{"chown", "-R", "ubuntu:ubuntu", "/home/ubuntu/workspace"})
 			Expect(err).To(BeNil())
+			assertExitCode(code, 0, out)
 
-			code, out, err := testContainer.Exec(context.Background(), []string{
+			code, out, err = testContainer.Exec(context.Background(), []string{
 				"/tmp/builder",
 				"-b", "gcr.io/paketo-buildpacks/java",
 				"-r", "/tmp/build-result.json",
@@ -248,6 +196,7 @@ var _ = Describe("Lifecycle", func() {
 				"--pass-env-var", "BP_JVM_VERSION",
 			}, exec.WithUser("ubuntu"))
 			Expect(err).To(BeNil())
+			assertExitCode(code, 0, out)
 
 			buf := new(strings.Builder)
 			_, err = io.Copy(buf, out)
@@ -263,7 +212,6 @@ var _ = Describe("Lifecycle", func() {
 			Expect(outString).To(ContainSubstring("Builder ran for"))
 			Expect(outString).To(ContainSubstring("result file saved to"))
 			Expect(outString).To(ContainSubstring("droplet archive saved to"))
-			Expect(code).To(Equal(0))
 		})
 
 		By("running a task", func() {
@@ -312,6 +260,80 @@ var _ = Describe("Lifecycle", func() {
 	})
 })
 
+var _ = Describe("Ensuring web process", func() {
+	var (
+		testContainer testcontainers.Container
+		err           error
+		cacheDir      string
+	)
+
+	BeforeEach(func() {
+		cacheDir = GinkgoT().TempDir()
+		Expect(err).ToNot(HaveOccurred())
+		req := testcontainers.ContainerRequest{
+			Image:         "ubuntu:noble",
+			ImagePlatform: "linux/amd64",
+			ExposedPorts:  []string{"8080/tcp"},
+			HostConfigModifier: func(hc *container.HostConfig) {
+				hc.Binds = []string{cacheDir + ":/tmp/cache"}
+			},
+			ConfigModifier: func(c *container.Config) {
+				c.Tty = true
+			},
+			Env: map[string]string{
+				"CNB_LAYERS_DIR": "/home/ubuntu/layers",
+				"CNB_APP_DIR":    "/home/ubuntu/workspace_go",
+				"CNB_STACK_ID":   "cflinuxfs4",
+				"CNB_USER_ID":    "1000",
+				"CNB_GROUP_ID":   "1000",
+				"CNB_LOG_LEVEL":  "DEBUG",
+				"CNB_NO_COLOR":   "true",
+			},
+			LifecycleHooks: []testcontainers.ContainerLifecycleHooks{{PostStarts: append(defaultContainerSetup(), prepareContainerWorkspace("./testdata/workspace_go", "go"))}},
+		}
+		testContainer, err = testcontainers.GenericContainer(context.Background(), testcontainers.GenericContainerRequest{
+			ContainerRequest: req,
+			Started:          true,
+		})
+		Expect(err).To(BeNil())
+	})
+
+	It("web process is added even when buildpack doesn't add one", func() {
+		By("building the app", func() {
+			code, out, err := testContainer.Exec(context.Background(), []string{
+				"/tmp/builder",
+				"-b", "gcr.io/paketo-buildpacks/go",
+				"-r", "/tmp/build-result.json",
+				"-d", "/tmp/droplet.tgz",
+				"-l", "/home/ubuntu/layers",
+				"-w", "/home/ubuntu/workspace_go",
+			}, exec.WithUser("ubuntu"))
+			Expect(err).To(BeNil())
+			assertExitCode(code, 0, out)
+
+			r, err := testContainer.CopyFileFromContainer(context.Background(), "/tmp/build-result.json")
+			Expect(err).To(BeNil())
+			defer r.Close()
+
+			resultBuf := bytes.NewBuffer(nil)
+			_, err = io.Copy(resultBuf, r)
+			Expect(err).To(BeNil())
+
+			result := staging.StagingResult{}
+			Expect(json.Unmarshal(resultBuf.Bytes(), &result)).To(Succeed())
+			Expect(result.LifecycleType).To(Equal("cnb"))
+			Expect(result.ProcessTypes).To(Equal(staging.ProcessTypes{
+				"hello-world": "/home/ubuntu/layers/paketo-buildpacks_go-build/targets/bin/hello-world",
+				"web":         "/home/ubuntu/layers/paketo-buildpacks_go-build/targets/bin/hello-world",
+			}))
+		})
+
+	})
+	AfterEach(func() {
+		Expect(testContainer.Terminate(context.Background())).To(Succeed())
+	})
+})
+
 func fetch(url string) string {
 	resp, err := http.Get(url)
 	if err != nil {
@@ -326,4 +348,70 @@ func fetch(url string) string {
 	}
 
 	return buf.String()
+}
+
+func defaultContainerSetup() []testcontainers.ContainerHook {
+	return []testcontainers.ContainerHook{
+		func(ctx context.Context, container testcontainers.Container) error {
+			code, _, err := container.Exec(ctx, []string{"apt", "update"})
+			if code != 0 {
+				return fmt.Errorf("failed to run apt update, RC: %d", code)
+			}
+
+			return err
+		},
+		func(ctx context.Context, container testcontainers.Container) error {
+			code, _, err := container.Exec(ctx, []string{"apt", "install", "ca-certificates", "skopeo", "-y"})
+			if code != 0 {
+				return fmt.Errorf("failed to run install ca-certificates, RC: %d", code)
+			}
+
+			return err
+		},
+	}
+}
+
+func prepareContainerWorkspace(workspaceDir string, buildpack string) func(context.Context, testcontainers.Container) error {
+
+	return func(ctx context.Context, container testcontainers.Container) error {
+		if err := container.CopyFileToContainer(ctx, "../bin/builder", "/tmp/builder", 0o755); err != nil {
+			return err
+		}
+
+		if err := container.CopyFileToContainer(ctx, "../bin/launcher", "/tmp/launcher", 0o755); err != nil {
+			return err
+		}
+
+		if err := container.CopyDirToContainer(ctx, workspaceDir, "/home/ubuntu/", 0o755); err != nil {
+			return err
+		}
+
+		if err := runInContainer(ctx, container, "chown", "-R", "ubuntu:ubuntu", filepath.Join("/home/ubuntu", filepath.Base(workspaceDir))); err != nil {
+			return err
+		}
+
+		if err := runInContainer(ctx, container, "mkdir", "-p", "/tmp/buildpacks"); err != nil {
+			return err
+		}
+
+		if err := runInContainer(ctx, container, "skopeo", "copy", fmt.Sprintf("docker://gcr.io/paketo-buildpacks/%s:latest", buildpack), "oci:/tmp/buildpacks/10bfa3ba0b8af13e"); err != nil {
+			return err
+		}
+
+		if err := runInContainer(ctx, container, "chown", "-R", "ubuntu:ubuntu", "/tmp/buildpacks"); err != nil {
+			return err
+		}
+
+		return nil
+	}
+}
+
+func assertExitCode(code int, expected int, out io.Reader) {
+	GinkgoHelper()
+	if code != expected {
+		buf := bytes.NewBufferString("")
+		_, _ = io.Copy(buf, out)
+		fmt.Print(buf.String())
+		Fail(fmt.Sprintf("expected code to equal %d, but was %d", expected, code))
+	}
 }
