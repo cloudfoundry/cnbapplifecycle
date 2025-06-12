@@ -233,6 +233,7 @@ var builderCmd = &cobra.Command{
 			logger.Errorf("failed 'build' phase, error: %s\n", err.Error())
 			return errors.ErrBuilding
 		}
+		ensureWebProcessType(buildMeta)
 
 		if err := files.Handler.WriteBuildMetadata(launch.GetMetadataFilePath(layersDir), buildMeta); err != nil {
 			logger.Errorf("failed writing build metadata, error: %s\n", err.Error())
@@ -278,8 +279,6 @@ var builderCmd = &cobra.Command{
 			logger.Errorf("failed to save archive cache folder, error: %s\n", err.Error())
 			return errors.ErrExporting
 		}
-
-		ensureWebProcessType(buildMeta)
 
 		resultData := staging.StagingResultFromMetadata(buildMeta)
 		resultBytes, err := json.Marshal(resultData)
@@ -343,7 +342,7 @@ func ensureWebProcessType(buildMeta *files.BuildMetadata) {
 			break
 		}
 
-		if process.Type == buildMeta.BuildpackDefaultProcessType {
+		if process.Type == buildMeta.BuildpackDefaultProcessType || len(buildMeta.Processes) == 1 {
 			defaultProcess = process
 		}
 	}
