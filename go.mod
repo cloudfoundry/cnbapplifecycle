@@ -11,7 +11,7 @@ require (
 	github.com/buildpacks/lifecycle v0.20.11
 	github.com/buildpacks/pack v0.36.4
 	github.com/cespare/xxhash/v2 v2.3.0
-	github.com/docker/docker v28.1.1+incompatible
+	github.com/docker/docker v28.3.0+incompatible
 	github.com/google/go-containerregistry v0.20.4
 	github.com/jarcoal/httpmock v1.3.1
 	github.com/onsi/ginkgo/v2 v2.23.4
@@ -94,6 +94,8 @@ require (
 	github.com/ckaznocha/intrange v0.3.1 // indirect
 	github.com/cloudfoundry/go-socks5 v0.0.0-20250423223041-4ad5fea42851 // indirect
 	github.com/cloudfoundry/socks5-proxy v0.2.150 // indirect
+	github.com/containerd/errdefs v1.0.0 // indirect
+	github.com/containerd/errdefs/pkg v0.3.0 // indirect
 	github.com/containerd/log v0.1.0 // indirect
 	github.com/containerd/platforms v1.0.0-rc.1 // indirect
 	github.com/containerd/stargz-snapshotter/estargz v0.16.3 // indirect
