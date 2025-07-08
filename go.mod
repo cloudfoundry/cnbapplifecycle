@@ -13,7 +13,7 @@ require (
 	github.com/cespare/xxhash/v2 v2.3.0
 	github.com/docker/docker v28.3.1+incompatible
 	github.com/google/go-containerregistry v0.20.6
-	github.com/jarcoal/httpmock v1.3.1
+	github.com/jarcoal/httpmock v1.4.0
 	github.com/onsi/ginkgo/v2 v2.23.4
 	github.com/onsi/gomega v1.37.0
 	github.com/spf13/cobra v1.9.1
