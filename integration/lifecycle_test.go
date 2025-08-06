@@ -72,7 +72,7 @@ var _ = Describe("Lifecycle", func() {
 	It("should build an app using system buildpacks", func() {
 		code, out, err := testContainer.Exec(context.Background(), []string{
 			"/tmp/builder",
-			"-b", "gcr.io/paketo-buildpacks/java",
+			"-b", "docker.io/paketobuildpacks/java",
 			"-r", "/tmp/build-result.json",
 			"-d", "/tmp/droplet.tgz",
 			"-l", "/home/ubuntu/layers",
@@ -119,7 +119,7 @@ var _ = Describe("Lifecycle", func() {
 		By("building the app", func() {
 			code, out, err := testContainer.Exec(context.Background(), []string{
 				"/tmp/builder",
-				"-b", "gcr.io/paketo-buildpacks/java",
+				"-b", "docker.io/paketobuildpacks/java",
 				"-r", "/tmp/build-result.json",
 				"-d", "/tmp/droplet.tgz",
 				"-l", "/home/ubuntu/layers",
@@ -188,7 +188,7 @@ var _ = Describe("Lifecycle", func() {
 
 			code, out, err = testContainer.Exec(context.Background(), []string{
 				"/tmp/builder",
-				"-b", "gcr.io/paketo-buildpacks/java",
+				"-b", "docker.io/paketobuildpacks/java",
 				"-r", "/tmp/build-result.json",
 				"-d", "/tmp/droplet.tgz",
 				"-l", "/home/ubuntu/layers",
@@ -302,7 +302,7 @@ var _ = Describe("Ensuring web process", func() {
 		By("building the app", func() {
 			code, out, err := testContainer.Exec(context.Background(), []string{
 				"/tmp/builder",
-				"-b", "gcr.io/paketo-buildpacks/go",
+				"-b", "docker.io/paketobuildpacks/go",
 				"-r", "/tmp/build-result.json",
 				"-d", "/tmp/droplet.tgz",
 				"-l", "/home/ubuntu/layers",
@@ -394,7 +394,7 @@ func prepareContainerWorkspace(workspaceDir string, buildpack string) func(conte
 			return err
 		}
 
-		if err := runInContainer(ctx, container, "skopeo", "copy", fmt.Sprintf("docker://gcr.io/paketo-buildpacks/%s:latest", buildpack), "oci:/tmp/buildpacks/10bfa3ba0b8af13e"); err != nil {
+		if err := runInContainer(ctx, container, "skopeo", "copy", fmt.Sprintf("docker://docker.io/paketobuildpacks/%s:latest", buildpack), "oci:/tmp/buildpacks/10bfa3ba0b8af13e"); err != nil {
 			return err
 		}
 
