@@ -13,6 +13,7 @@ import (
 	"code.cloudfoundry.org/cnbapplifecycle/pkg/archive"
 	"code.cloudfoundry.org/cnbapplifecycle/pkg/buildpacks"
 	"code.cloudfoundry.org/cnbapplifecycle/pkg/credhub"
+	"code.cloudfoundry.org/cnbapplifecycle/pkg/databaseuri"
 	"code.cloudfoundry.org/cnbapplifecycle/pkg/errors"
 	"code.cloudfoundry.org/cnbapplifecycle/pkg/keychain"
 	"code.cloudfoundry.org/cnbapplifecycle/pkg/log"
@@ -54,7 +55,6 @@ var (
 	systemBuildpacksDir       string
 	extensionsDir             string
 	downloadCacheDir          string
-	err                       error
 	credhubConnectionAttempts int
 	credhubRetryDelay         time.Duration
 )
@@ -95,7 +95,20 @@ var builderCmd = &cobra.Command{
 
 		if err := credhub.InterpolateServiceRefs(credhubConnectionAttempts, credhubRetryDelay); err != nil {
 			logger.Error(err.Error())
-			return errors.ErrLaunching
+			return errors.ErrGenericBuild
+		}
+
+		databaseUrl, err := databaseuri.ParseDatabaseURI(os.Getenv("VCAP_SERVICES"))
+		if err != nil {
+			logger.Errorf("failed to parse database URI, error: %s\n", err.Error())
+			return errors.ErrGenericBuild
+		}
+		if databaseUrl != "" {
+			err = os.Setenv("DATABASE_URL", databaseUrl)
+			if err != nil {
+				logger.Errorf("Unable to set DATABASE_URL envirionment variable: %v", err)
+				return errors.ErrGenericBuild
+			}
 		}
 
 		tempDirs := map[string]*string{

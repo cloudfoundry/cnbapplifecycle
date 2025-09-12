@@ -17,6 +17,7 @@ import (
 
 	builderCli "code.cloudfoundry.org/cnbapplifecycle/cmd/builder/cli"
 	"code.cloudfoundry.org/cnbapplifecycle/pkg/credhub"
+	"code.cloudfoundry.org/cnbapplifecycle/pkg/databaseuri"
 	"code.cloudfoundry.org/cnbapplifecycle/pkg/errors"
 	"code.cloudfoundry.org/cnbapplifecycle/pkg/log"
 )
@@ -91,6 +92,19 @@ func Launch(osArgs []string, theLauncher TheLauncher) error {
 	if err := credhub.InterpolateServiceRefs(credhubConnectionAttempts, credhubRetryDelay); err != nil {
 		logger.Error(err.Error())
 		return errors.ErrLaunching
+	}
+
+	databaseUrl, err := databaseuri.ParseDatabaseURI(os.Getenv("VCAP_SERVICES"))
+	if err != nil {
+		logger.Errorf("failed to parse database URI, error: %s\n", err.Error())
+		return errors.ErrLaunching
+	}
+	if databaseUrl != "" {
+		err = os.Setenv("DATABASE_URL", databaseUrl)
+		if err != nil {
+			logger.Errorf("Unable to set DATABASE_URL envirionment variable: %v", err)
+			return errors.ErrLaunching
+		}
 	}
 
 	var self string
