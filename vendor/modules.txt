@@ -492,11 +492,8 @@ github.com/docker/docker/api/types/time
 github.com/docker/docker/api/types/versions
 github.com/docker/docker/api/types/volume
 github.com/docker/docker/client
-github.com/docker/docker/errdefs
 github.com/docker/docker/internal/lazyregexp
-github.com/docker/docker/pkg/archive
 github.com/docker/docker/pkg/homedir
-github.com/docker/docker/pkg/idtools
 github.com/docker/docker/pkg/ioutils
 github.com/docker/docker/pkg/jsonmessage
 github.com/docker/docker/pkg/stdcopy
@@ -505,7 +502,7 @@ github.com/docker/docker/registry
 ## explicit; go 1.21
 github.com/docker/docker-credential-helpers/client
 github.com/docker/docker-credential-helpers/credentials
-# github.com/docker/go-connections v0.5.0
+# github.com/docker/go-connections v0.6.0
 ## explicit; go 1.18
 github.com/docker/go-connections/nat
 github.com/docker/go-connections/sockets
@@ -516,7 +513,7 @@ github.com/docker/go-metrics
 # github.com/docker/go-units v0.5.0
 ## explicit
 github.com/docker/go-units
-# github.com/ebitengine/purego v0.8.2
+# github.com/ebitengine/purego v0.8.4
 ## explicit; go 1.18
 github.com/ebitengine/purego
 github.com/ebitengine/purego/internal/cgo
@@ -1272,7 +1269,7 @@ github.com/securego/gosec/v2/analyzers
 github.com/securego/gosec/v2/cwe
 github.com/securego/gosec/v2/issue
 github.com/securego/gosec/v2/rules
-# github.com/shirou/gopsutil/v4 v4.25.3
+# github.com/shirou/gopsutil/v4 v4.25.6
 ## explicit; go 1.23
 github.com/shirou/gopsutil/v4/common
 github.com/shirou/gopsutil/v4/cpu
@@ -1347,8 +1344,8 @@ github.com/subosito/gotenv
 # github.com/tdakkota/asciicheck v0.4.1
 ## explicit; go 1.22.0
 github.com/tdakkota/asciicheck
-# github.com/testcontainers/testcontainers-go v0.37.0
-## explicit; go 1.23.0
+# github.com/testcontainers/testcontainers-go v0.39.0
+## explicit; go 1.24.0
 github.com/testcontainers/testcontainers-go
 github.com/testcontainers/testcontainers-go/exec
 github.com/testcontainers/testcontainers-go/internal
