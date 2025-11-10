@@ -1,6 +1,6 @@
 module code.cloudfoundry.org/cnbapplifecycle
 
-go 1.24.6
+go 1.25.3
 
 tool github.com/golangci/golangci-lint/v2/cmd/golangci-lint
 
@@ -8,7 +8,7 @@ require (
 	code.cloudfoundry.org/credhub-cli v0.0.0-20250505130841-11f3a43db498
 	github.com/BurntSushi/toml v1.5.0
 	github.com/apex/log v1.9.0
-	github.com/buildpacks/lifecycle v0.20.16
+	github.com/buildpacks/lifecycle v0.20.18
 	github.com/buildpacks/pack v0.38.2
 	github.com/cespare/xxhash/v2 v2.3.0
 	github.com/docker/docker v28.5.1+incompatible
