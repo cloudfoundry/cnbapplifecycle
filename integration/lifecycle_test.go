@@ -12,6 +12,7 @@ import (
 	"time"
 
 	"code.cloudfoundry.org/cnbapplifecycle/pkg/staging"
+	"github.com/cespare/xxhash/v2"
 	"github.com/docker/docker/api/types/container"
 	. "github.com/onsi/ginkgo/v2"
 	. "github.com/onsi/gomega"
@@ -72,7 +73,7 @@ var _ = Describe("Lifecycle", func() {
 	It("should build an app using system buildpacks", func() {
 		code, out, err := testContainer.Exec(context.Background(), []string{
 			"/tmp/builder",
-			"-b", "docker.io/paketobuildpacks/java",
+			"-b", "java",
 			"-r", "/tmp/build-result.json",
 			"-d", "/tmp/droplet.tgz",
 			"-l", "/home/ubuntu/layers",
@@ -394,7 +395,7 @@ func prepareContainerWorkspace(workspaceDir string, buildpack string) func(conte
 			return err
 		}
 
-		if err := runInContainer(ctx, container, "skopeo", "copy", fmt.Sprintf("docker://docker.io/paketobuildpacks/%s:latest", buildpack), "oci:/tmp/buildpacks/10bfa3ba0b8af13e"); err != nil {
+		if err := runInContainer(ctx, container, "skopeo", "copy", fmt.Sprintf("docker://docker.io/paketobuildpacks/%s:latest", buildpack), fmt.Sprintf("oci:/tmp/buildpacks/%016x", xxhash.Sum64String(buildpack))); err != nil {
 			return err
 		}
 
