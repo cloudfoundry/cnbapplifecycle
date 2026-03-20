@@ -21,11 +21,13 @@ import (
 
 	"github.com/fatih/color"
 	"github.com/gofrs/flock"
+	"github.com/ldez/grignotin/goenv"
 	"github.com/spf13/cobra"
 	"github.com/spf13/pflag"
 	"github.com/spf13/viper"
 	"go.uber.org/automaxprocs/maxprocs"
-	"gopkg.in/yaml.v3"
+	"go.yaml.in/yaml/v3"
+	"golang.org/x/mod/sumdb/dirhash"
 
 	"github.com/golangci/golangci-lint/v2/internal/cache"
 	"github.com/golangci/golangci-lint/v2/pkg/config"
@@ -109,7 +111,7 @@ func newRunCommand(logger logutils.Log, info BuildInfo) *runCommand {
 
 	runCmd := &cobra.Command{
 		Use:                "run",
-		Short:              "Run the linters",
+		Short:              "Lint the code.",
 		Run:                c.execute,
 		PreRunE:            c.preRunE,
 		PostRun:            c.postRun,
@@ -216,7 +218,7 @@ func (c *runCommand) preRunE(_ *cobra.Command, args []string) error {
 
 	c.contextBuilder = lint.NewContextBuilder(c.cfg, pkgLoader, pkgCache, guard)
 
-	if err = initHashSalt(c.buildInfo.Version, c.cfg); err != nil {
+	if err = initHashSalt(c.log.Child(logutils.DebugKeyGoModSalt), c.buildInfo.Version, c.cfg); err != nil {
 		return fmt.Errorf("failed to init hash salt: %w", err)
 	}
 
@@ -374,7 +376,7 @@ func (c *runCommand) runAndPrint(ctx context.Context) error {
 }
 
 // runAnalysis executes the linters that have been enabled in the configuration.
-func (c *runCommand) runAnalysis(ctx context.Context) ([]result.Issue, error) {
+func (c *runCommand) runAnalysis(ctx context.Context) ([]*result.Issue, error) {
 	lintersToRun, err := c.dbManager.GetOptimizedLinters()
 	if err != nil {
 		return nil, err
@@ -406,7 +408,7 @@ func (c *runCommand) setOutputToDevNull() (savedStdout, savedStderr *os.File) {
 	return
 }
 
-func (c *runCommand) setExitCodeIfIssuesFound(issues []result.Issue) {
+func (c *runCommand) setExitCodeIfIssuesFound(issues []*result.Issue) {
 	if len(issues) != 0 {
 		c.exitCode = c.cfg.Run.ExitCodeIfIssuesFound
 	}
@@ -428,10 +430,21 @@ func (c *runCommand) printDeprecatedLinterMessages(enabledLinters map[string]*li
 		}
 
 		c.log.Warnf("The linter '%s' is deprecated (since %s) due to: %s %s", name, lc.Deprecation.Since, lc.Deprecation.Message, extra)
+
+		if lc.Deprecation.ConfigSuggestion != nil {
+			suggestion, err := lc.Deprecation.ConfigSuggestion()
+			if err != nil {
+				c.log.Errorf("New configuration suggestion error: %v", err)
+			}
+
+			if suggestion != "" {
+				c.log.Warnf("Suggested new configuration:\n%s", suggestion)
+			}
+		}
 	}
 }
 
-func (c *runCommand) printStats(issues []result.Issue) {
+func (c *runCommand) printStats(issues []*result.Issue) {
 	if !c.cfg.Output.ShowStats {
 		return
 	}
@@ -582,6 +595,7 @@ func setupConfigFileFlagSet(fs *pflag.FlagSet, cfg *config.LoaderOptions) {
 func setupRunPersistentFlags(fs *pflag.FlagSet, opts *runOptions) {
 	fs.BoolVar(&opts.PrintResourcesUsage, "print-resources-usage", false,
 		color.GreenString("Print avg and max memory usage of golangci-lint and total time"))
+	_ = fs.MarkDeprecated("print-resources-usage", "use --verbose instead")
 
 	fs.StringVar(&opts.CPUProfilePath, "cpu-profile-path", "", color.GreenString("Path to CPU profile output file"))
 	fs.StringVar(&opts.MemProfilePath, "mem-profile-path", "", color.GreenString("Path to memory profile output file"))
@@ -618,7 +632,7 @@ func formatMemory(memBytes uint64) string {
 
 // Related to cache.
 
-func initHashSalt(version string, cfg *config.Config) error {
+func initHashSalt(logger logutils.Log, version string, cfg *config.Config) error {
 	binSalt, err := computeBinarySalt(version)
 	if err != nil {
 		return fmt.Errorf("failed to calculate binary salt: %w", err)
@@ -629,9 +643,18 @@ func initHashSalt(version string, cfg *config.Config) error {
 		return fmt.Errorf("failed to calculate config salt: %w", err)
 	}
 
+	goModSalt, err := computeGoModSalt()
+	if err != nil {
+		// NOTE: missing go.mod must be ignored.
+		logger.Warnf("Failed to calculate go.mod salt: %v", err)
+	}
+
 	b := bytes.NewBuffer(binSalt)
 	b.Write(configSalt)
+	b.WriteString(goModSalt)
+
 	cache.SetSalt(b)
+
 	return nil
 }
 
@@ -648,15 +671,19 @@ func computeBinarySalt(version string) ([]byte, error) {
 	if err != nil {
 		return nil, err
 	}
+
 	f, err := os.Open(p)
 	if err != nil {
 		return nil, err
 	}
+
 	defer f.Close()
+
 	h := sha256.New()
 	if _, err := io.Copy(h, f); err != nil {
 		return nil, err
 	}
+
 	return h.Sum(nil), nil
 }
 
@@ -678,5 +705,29 @@ func computeConfigSalt(cfg *config.Config) ([]byte, error) {
 	if _, err := h.Write(configData.Bytes()); err != nil {
 		return nil, err
 	}
+
 	return h.Sum(nil), nil
+}
+
+func computeGoModSalt() (string, error) {
+	values, err := goenv.Get(context.Background(), goenv.GOMOD)
+	if err != nil {
+		return "", fmt.Errorf("failed to get goenv: %w", err)
+	}
+
+	goModPath := filepath.Clean(values[goenv.GOMOD])
+
+	data, err := os.ReadFile(goModPath)
+	if err != nil {
+		return "", fmt.Errorf("failed to read go.mod: %w", err)
+	}
+
+	sum, err := dirhash.Hash1([]string{goModPath}, func(string) (io.ReadCloser, error) {
+		return io.NopCloser(bytes.NewReader(data)), nil
+	})
+	if err != nil {
+		return "", fmt.Errorf("failed to compute go.sum: %w", err)
+	}
+
+	return sum, nil
 }
