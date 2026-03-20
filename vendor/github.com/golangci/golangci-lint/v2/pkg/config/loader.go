@@ -153,7 +153,7 @@ func (l *Loader) appendStringSlice(name string, current *[]string) {
 func (l *Loader) checkConfigurationVersion() error {
 	if l.cfg.GetConfigDir() != "" && l.cfg.Version != "2" {
 		return fmt.Errorf("unsupported version of the configuration: %q "+
-			"See https://golangci-lint.run/product/migration-guide for migration instructions", l.cfg.Version)
+			"See https://golangci-lint.run/docs/product/migration-guide for migration instructions", l.cfg.Version)
 	}
 
 	return nil
@@ -161,7 +161,7 @@ func (l *Loader) checkConfigurationVersion() error {
 
 func (l *Loader) handleGoVersion() {
 	if l.cfg.Run.Go == "" {
-		l.cfg.Run.Go = detectGoVersion(context.Background())
+		l.cfg.Run.Go = detectGoVersion(context.Background(), l.log)
 	}
 
 	l.cfg.Linters.Settings.Govet.Go = l.cfg.Run.Go
