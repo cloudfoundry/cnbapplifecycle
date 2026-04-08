@@ -1,6 +1,0 @@
-apply plugin: 'java'
-apply plugin: 'org.springframework.boot'
-
-dependencies {
-    implementation project(':spring-common')
-}

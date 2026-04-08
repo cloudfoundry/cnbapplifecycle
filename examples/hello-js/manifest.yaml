@@ -4,7 +4,7 @@ applications:
   path: .
   lifecycle: cnb
   buildpacks:
-  - paketobuildpacks/nodejs
+  - docker://docker.io/paketobuildpacks/nodejs
   instances: 1
   random-route: false
   memory: 1024M
