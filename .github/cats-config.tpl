@@ -4,10 +4,7 @@
     "admin_user": "ccadmin",
     "api": "api.127-0-0-1.nip.io",
     "apps_domain": "apps.127-0-0-1.nip.io",
-    "comma_delim_asgs_enabled": true,
     "internal_cc_address": "internal-service",
-    "isolation_segment_name": "isolated",
-    "public_docker_app_image": "cloudfoundry/diego-docker-app@sha256:6778850ceba30b871153da93c19a954a7c1ec8f02e6113e26612e35168c9a63b",
     "skip_ssl_validation": true,
     "timeout_scale": 2,
     "use_http": false,
@@ -43,17 +40,10 @@
     "include_windows": false,
     "include_zipkin": false,
 
-    "volume_service_name": "nfs",
-    "volume_service_plan_name": "Existing",
-    "volume_service_create_config": "{\"share\": \"nfs-server/exports/test-share\"}",
-
-
     "java_buildpack_name": "java-buildpack",
     "ruby_buildpack_name": "ruby_buildpack",
     "nodejs_buildpack_name": "nodejs_buildpack",
     "binary_buildpack_name": "binary_buildpack",
     "go_buildpack_name": "go_buildpack",
     "python_buildpack_name": "python_buildpack",
-
-    "catnip_docker_app_image": "ghcr.io/cloudfoundry/catnip-app:latest"
 }
