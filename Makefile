@@ -12,6 +12,6 @@ integration: build
 	INCLUDE_INTEGRATION_TESTS=true go test -v -count=1 ./integration --ginkgo.label-filter integration -ginkgo.v
 
 package: build
-	tar czf bin/cnb_app_lifecycle.tgz -C bin builder launcher diego-sshd healthcheck
+	tar czf bin/cnb_app_lifecycle.tgz -C bin builder launcher diego-sshd healthcheck cf-pcap
 
 .PHONY: build test integration package
