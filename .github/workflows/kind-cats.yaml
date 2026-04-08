@@ -26,17 +26,22 @@ jobs:
           CF_CLI_VERSION: "8.18.0"
           KIND_VERSION: "0.31.0"
           HELMFILE_VERSION: "1.4.3"
+      - name: checkout kind-deployment
+        uses: actions/checkout@v6
+        with:
+          repository: "cloudfoundry/kind-deployment"
+          path: "kind"
       - name: Run make up
         run: |
-          make up
+          cd kind && make up
       - name: Login
-        run: make login
+        run: cd kind && make login
       - name: Init
-        run: make bootstrap-complete
+        run: cd kind && make bootstrap-complete
       - name: checkout CF test repository
         uses: actions/checkout@v6
         with:
-          repository: "$cloudfoundry/cf-acceptance-tests"
+          repository: "cloudfoundry/cf-acceptance-tests"
           ref: develop
           path: "cf-acceptance-tests"
       - name: setup Go
@@ -51,7 +56,7 @@ jobs:
       - name: templating config
         shell: bash
         run: |
-          source temp/secrets.sh
+          source kind/temp/secrets.sh
           python3 -c 'import os,sys;[sys.stdout.write(os.path.expandvars(l)) for l in sys.stdin]' < ./.github/cats-config.tpl > ./.github/cats-config.json
       - name: run CATS
         env:
