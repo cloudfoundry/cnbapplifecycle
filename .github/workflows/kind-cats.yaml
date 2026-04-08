@@ -39,6 +39,7 @@ jobs:
       - name: setup Go
         uses: actions/setup-go@v6
         with:
+          go-version-file: go.mod
           cache: false
       - name: checkout kind-deployment
         uses: actions/checkout@v6
