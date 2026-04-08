@@ -53,19 +53,8 @@ jobs:
         run: cd kind && make login
       - name: Init
         run: cd kind && make bootstrap-complete
-      - name: Load cnbapplifecycle.tgz from kind
-        run: |
-          kubectl cp default/$(kubectl get pod -n default -l app.kubernetes.io/name=fileserver \
-          -o jsonpath='{.items[0].metadata.name}'):fileserver/v1/static/cnb_app_lifecycle/cnb_app_lifecycle.tgz \
-          /tmp/cnb_app_lifecycle.tgz
-      - name: Extract cnbapplifecycle.tgz
-        run: |
-          mkdir bin
-          tar -xvf /tmp/cnb_app_lifecycle.tgz -C bin
       - name: Build cnbapplifecycle.tgz
-        run: make package
-      - name: check cnbapplifecycle
-        run: ls -la bin
+        run: make copy-binaries package
       - name: Load updated cnbapplifecycle.tgz into kind
         run: |
           kubectl cp bin/cnb_app_lifecycle.tgz \
