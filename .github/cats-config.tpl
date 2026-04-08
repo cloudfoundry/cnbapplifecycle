@@ -10,7 +10,7 @@
     "use_http": false,
 
     "include_app_syslog_tcp": false,
-    "include_apps": true,
+    "include_apps": false,
     "include_cnb": true,
     "include_container_networking": false,
     "include_deployments": false,
