@@ -4,7 +4,6 @@
     "admin_user": "ccadmin",
     "api": "api.127-0-0-1.nip.io",
     "apps_domain": "apps.127-0-0-1.nip.io",
-    "internal_cc_address": "internal-service",
     "skip_ssl_validation": true,
     "timeout_scale": 2,
     "use_http": false,
@@ -45,5 +44,5 @@
     "nodejs_buildpack_name": "nodejs_buildpack",
     "binary_buildpack_name": "binary_buildpack",
     "go_buildpack_name": "go_buildpack",
-    "python_buildpack_name": "python_buildpack",
+    "python_buildpack_name": "python_buildpack"
 }
