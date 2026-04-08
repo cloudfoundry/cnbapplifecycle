@@ -1,0 +1,9 @@
+---
+applications:
+- name: hello-java
+  lifecycle: cnb
+  buildpacks:
+  - paketobuildpacks/java
+  instances: 1
+  random-route: false
+  memory: 1024M

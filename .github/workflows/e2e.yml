@@ -1,0 +1,67 @@
+name: E2E Tests on KinD
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+jobs:
+  e2e:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+      - name: Set kernel settings
+        run: |
+          docker run --rm \
+            --privileged \
+            --pid host \
+            -v /lib/modules:/lib/modules:ro \
+            alpine sh -c "sysctl -w fs.inotify.max_user_instances=512 && modprobe nfs && modprobe nfsd"
+      - name: Install dependencies
+        run: |
+          mkdir -p $HOME/.local/bin && echo "$HOME/.local/bin" >> "$GITHUB_PATH"
+          curl -L https://kind.sigs.k8s.io/dl/v${KIND_VERSION}/kind-linux-amd64 -o $HOME/.local/bin/kind
+          chmod +x $HOME/.local/bin/kind
+          curl -L https://github.com/helmfile/helmfile/releases/download/v${HELMFILE_VERSION}/helmfile_${HELMFILE_VERSION}_linux_amd64.tar.gz | tar -zx
+          mv helmfile $HOME/.local/bin/helmfile
+          curl -L "https://packages.cloudfoundry.org/stable?release=linux64-binary&version=${CF_CLI_VERSION}&source=github" | tar -zx
+          mv cf8 $HOME/.local/bin/cf
+          curl -L "https://dl.k8s.io/release/v${KUBECTL_VERSION}/bin/linux/amd64/kubectl" -o $HOME/.local/bin/kubectl
+          chmod +x $HOME/.local/bin/kubectl
+        env:
+          CF_CLI_VERSION: "8.18.0"
+          KIND_VERSION: "0.31.0"
+          HELMFILE_VERSION: "1.4.3"
+          KUBECTL_VERSION: "1.28.0"
+      - name: setup Go
+        uses: actions/setup-go@v6
+        with:
+          go-version-file: go.mod
+          cache: false
+      - name: checkout kind-deployment
+        uses: actions/checkout@v6
+        with:
+          repository: "cloudfoundry/kind-deployment"
+          path: "kind"
+      - name: Run make up
+        run: |
+          cd kind && make up
+      - name: Login
+        run: cd kind && make login
+      - name: Init
+        run: cd kind && make bootstrap-complete
+      - name: Build cnbapplifecycle.tgz
+        run: make copy-binaries package
+      - name: Load updated cnbapplifecycle.tgz into kind
+        run: |
+          kubectl cp bin/cnb_app_lifecycle.tgz \
+          default/$(kubectl get pod -n default -l app.kubernetes.io/name=fileserver \
+          -o jsonpath='{.items[0].metadata.name}'):fileserver/v1/static/cnb_app_lifecycle/cnb_app_lifecycle.tgz
+      - name: Prepare CF
+        run: make bootstrap login
+      - name: Run E2E tests for java
+        run: cf push hello-java -f examples/hello-java/manifest.yaml
+      - name: Run E2E tests for nodejs
+        run: cf push hello-js -f examples/hello-js/manifest.yaml
+      
