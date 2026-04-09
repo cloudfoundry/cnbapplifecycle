@@ -1,9 +1,10 @@
 name: E2E Tests on KinD
 
 on:
+  pull_request:
+    branches: ["main"]
   push:
-    branches:
-      - main
+    branches: ["main"]
   workflow_dispatch:
 
 jobs:
@@ -59,7 +60,13 @@ jobs:
           default/$(kubectl get pod -n default -l app.kubernetes.io/name=fileserver \
           -o jsonpath='{.items[0].metadata.name}'):fileserver/v1/static/cnb_app_lifecycle/cnb_app_lifecycle.tgz
       - name: Run E2E tests for java
-        run: cf push hello-java -f examples/hello-java/manifest.yaml
+        run: |
+          cf push hello-java -f examples/hello-java/manifest.yaml
+          curl -s -f hello-java.apps.127-0-0-1.nip.io | grep -F "Hello World"
+          cf delete hello-java -f -r
       - name: Run E2E tests for nodejs
-        run: cf push hello-js -f examples/hello-js/manifest.yaml
+        run: |
+          cf push hello-js -f examples/hello-js/manifest.yaml
+          curl -s -f hello-js.apps.127-0-0-1.nip.io | grep -F "Hello World"
+          cf delete hello-js -f -r
       

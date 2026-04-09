@@ -5,9 +5,6 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.ArrayList;
-import java.util.List;
-
 @SpringBootApplication(proxyBeanMethods=false)
 @RestController
 public class Application {
@@ -16,19 +13,20 @@ public class Application {
 		SpringApplication.run(Application.class, args);
 	}
 
-	@GetMapping("/")
-	public String fibonacci() {
-		List<Long> fibNumbers = new ArrayList<>();
-		long a = 0, b = 1;
-		
-		for (int i = 0; i < 40; i++) {
-			fibNumbers.add(a);
-			long next = a + b;
-			a = b;
-			b = next;
-		}
-		
-		return fibNumbers.toString();
+	// CPU-intensive Fibonacci calculation
+	private long fib(int n) {
+		if (n <= 1) return n;
+		return fib(n - 1) + fib(n - 2);
 	}
 
+	@GetMapping("/")
+	public String index() {
+		String instanceIndex = System.getenv("CF_INSTANCE_INDEX");
+		
+		// Do CPU-intensive work
+		long fibResult = fib(40);
+		System.out.println("Computed Fibonacci(40): " + fibResult);
+		
+		return "Hello World! (CF_INSTANCE_INDEX: " + instanceIndex + ")\nFibonacci(40): " + fibResult + "\n";
+	}
 }
