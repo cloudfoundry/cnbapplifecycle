@@ -1,0 +1,10 @@
+---
+applications:
+- name: hello-java
+  path: .
+  lifecycle: cnb
+  buildpacks:
+  - docker://docker.io/paketobuildpacks/java
+  instances: 1
+  random-route: false
+  memory: 1024M
