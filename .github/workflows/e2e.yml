@@ -58,8 +58,6 @@ jobs:
           kubectl cp bin/cnb_app_lifecycle.tgz \
           default/$(kubectl get pod -n default -l app.kubernetes.io/name=fileserver \
           -o jsonpath='{.items[0].metadata.name}'):fileserver/v1/static/cnb_app_lifecycle/cnb_app_lifecycle.tgz
-      - name: Prepare CF
-        run: make bootstrap login
       - name: Run E2E tests for java
         run: cf push hello-java -f examples/hello-java/manifest.yaml
       - name: Run E2E tests for nodejs
