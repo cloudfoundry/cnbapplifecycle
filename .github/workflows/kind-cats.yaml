@@ -58,7 +58,7 @@ jobs:
       - name: Load updated cnbapplifecycle.tgz into kind
         run: |
           kubectl cp bin/cnb_app_lifecycle.tgz \
-          default/$(kubectl get pod -n default -l app.kubernetes.io/name=fileserver \
+          cf-system/$(kubectl get pod -n cf-system -l app.kubernetes.io/name=fileserver \
           -o jsonpath='{.items[0].metadata.name}'):fileserver/v1/static/cnb_app_lifecycle/cnb_app_lifecycle.tgz
       - name: checkout CF test repository
         uses: actions/checkout@v6
