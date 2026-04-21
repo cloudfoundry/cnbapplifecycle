@@ -53,13 +53,19 @@ jobs:
         run: cd kind && make login
       - name: Init
         run: cd kind && make bootstrap-complete
-      - name: Build cnbapplifecycle.tgz
-        run: make copy-binaries package
-      - name: Load updated cnbapplifecycle.tgz into kind
+      - name: Update cnb_app_lifecycle.tgz in cluster
         run: |
-          kubectl cp bin/cnb_app_lifecycle.tgz \
-          default/$(kubectl get pod -n default -l app.kubernetes.io/name=fileserver \
-          -o jsonpath='{.items[0].metadata.name}'):fileserver/v1/static/cnb_app_lifecycle/cnb_app_lifecycle.tgz
+          make build
+          kubectl -n cf-system rollout status deployment fileserver
+          POD=cf-system/$(kubectl get pod -n cf-system -l app.kubernetes.io/name=fileserver -o jsonpath='{.items[0].metadata.name}')
+
+          mkdir lifecycle
+          kubectl cp $POD:fileserver/v1/static/cnb_app_lifecycle/cnb_app_lifecycle.tgz cnb_app_lifecycle_original.tgz
+          tar xf cnb_app_lifecycle_original.tgz -C lifecycle
+          cp bin/* lifecycle
+          tar czf cnb_app_lifecycle_updated.tgz -C lifecycle .
+
+          kubectl cp cnb_app_lifecycle_updated.tgz $POD:fileserver/v1/static/cnb_app_lifecycle/cnb_app_lifecycle.tgz
       - name: checkout CF test repository
         uses: actions/checkout@v6
         with:
