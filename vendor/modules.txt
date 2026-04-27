@@ -1187,7 +1187,7 @@ github.com/nunnatsa/ginkgolinter/internal/rules
 github.com/nunnatsa/ginkgolinter/internal/typecheck
 github.com/nunnatsa/ginkgolinter/linter
 github.com/nunnatsa/ginkgolinter/version
-# github.com/onsi/ginkgo/v2 v2.28.1
+# github.com/onsi/ginkgo/v2 v2.28.2
 ## explicit; go 1.24.0
 github.com/onsi/ginkgo/v2
 github.com/onsi/ginkgo/v2/config
