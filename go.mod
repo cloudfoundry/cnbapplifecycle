@@ -1,6 +1,6 @@
 module code.cloudfoundry.org/cnbapplifecycle
 
-go 1.26.1
+go 1.26.2
 
 tool github.com/golangci/golangci-lint/v2/cmd/golangci-lint
 
@@ -8,7 +8,7 @@ require (
 	code.cloudfoundry.org/credhub-cli v0.0.0-20260316130226-db948d6c5f1c
 	github.com/BurntSushi/toml v1.6.0
 	github.com/apex/log v1.9.0
-	github.com/buildpacks/lifecycle v0.21.7
+	github.com/buildpacks/lifecycle v0.21.8
 	github.com/buildpacks/pack v0.40.3
 	github.com/cespare/xxhash/v2 v2.3.0
 	github.com/docker/docker v28.5.2+incompatible
@@ -104,7 +104,7 @@ require (
 	github.com/containerd/errdefs v1.0.0 // indirect
 	github.com/containerd/errdefs/pkg v0.3.0 // indirect
 	github.com/containerd/log v0.1.0 // indirect
-	github.com/containerd/platforms v1.0.0-rc.2 // indirect
+	github.com/containerd/platforms v1.0.0-rc.4 // indirect
 	github.com/containerd/stargz-snapshotter/estargz v0.18.2 // indirect
 	github.com/containerd/typeurl/v2 v2.2.3 // indirect
 	github.com/cpuguy83/dockercfg v0.3.2 // indirect
@@ -143,7 +143,7 @@ require (
 	github.com/go-toolsmith/astp v1.1.0 // indirect
 	github.com/go-toolsmith/strparse v1.1.0 // indirect
 	github.com/go-toolsmith/typep v1.1.0 // indirect
-	github.com/go-viper/mapstructure/v2 v2.4.0 // indirect
+	github.com/go-viper/mapstructure/v2 v2.5.0 // indirect
 	github.com/go-xmlfmt/xmlfmt v1.1.3 // indirect
 	github.com/gobwas/glob v0.2.3 // indirect
 	github.com/godoc-lint/godoc-lint v0.10.2 // indirect
@@ -210,7 +210,7 @@ require (
 	github.com/mitchellh/go-homedir v1.1.0 // indirect
 	github.com/mitchellh/ioprogress v0.0.0-20180201004757-6a23b12fa88e // indirect
 	github.com/mitchellh/mapstructure v1.5.0 // indirect
-	github.com/moby/buildkit v0.28.1 // indirect
+	github.com/moby/buildkit v0.29.0 // indirect
 	github.com/moby/docker-image-spec v1.3.1 // indirect
 	github.com/moby/go-archive v0.2.0 // indirect
 	github.com/moby/moby/api v1.54.2 // indirect
