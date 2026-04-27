@@ -13,7 +13,7 @@ import (
 
 	"code.cloudfoundry.org/cnbapplifecycle/pkg/staging"
 	"github.com/cespare/xxhash/v2"
-	"github.com/docker/docker/api/types/container"
+	"github.com/moby/moby/api/types/container"
 	. "github.com/onsi/ginkgo/v2"
 	. "github.com/onsi/gomega"
 	"github.com/testcontainers/testcontainers-go"
