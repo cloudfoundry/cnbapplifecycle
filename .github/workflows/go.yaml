@@ -42,20 +42,3 @@ jobs:
           go-version: stable
       - run: |
           cd src/code.cloudfoundry.org && go get -u code.cloudfoundry.org/cnbapplifecycle@${{ github.event.pull_request.head.sha }}
-  automerge:
-    runs-on: ubuntu-latest
-    if: github.actor == 'dependabot[bot]' && github.event_name == 'pull_request'
-    needs: [diego-compat, unit]
-    steps:
-      - name: Dependabot metadata
-        id: dependabot-metadata
-        uses: dependabot/fetch-metadata@v3
-        with:
-          github-token: "${{ secrets.GITHUB_TOKEN }}"
-      - name: Approve and merge
-        run: |
-          gh pr review --approve "$PR_URL"
-          gh pr merge --rebase --delete-branch "$PR_URL"
-        env:
-          PR_URL: ${{ github.event.pull_request.html_url }}
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
