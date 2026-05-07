@@ -39,7 +39,7 @@
     "include_windows": false,
     "include_zipkin": false,
 
-    "java_buildpack_name": "java-buildpack",
+    "java_buildpack_name": "java_buildpack",
     "ruby_buildpack_name": "ruby_buildpack",
     "nodejs_buildpack_name": "nodejs_buildpack",
     "binary_buildpack_name": "binary_buildpack",
