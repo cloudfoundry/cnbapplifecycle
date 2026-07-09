@@ -1,0 +1,87 @@
+name: Release
+
+on:
+  workflow_run:
+    workflows: ["CF Acceptance Tests on KinD"]
+    types: [completed]
+    branches: [main]
+
+jobs:
+  release:
+    if: ${{ github.event.workflow_run.conclusion == 'success' }}
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v6
+
+      - name: Get commit info and calculate next version
+        id: commit-info
+        run: |
+          COMMIT_SHA=${{ github.event.workflow_run.head_sha }}
+          echo "commit_sha=$COMMIT_SHA" >> $GITHUB_OUTPUT
+          
+          # Get latest tag
+          LATEST_TAG=$(gh release view --json tagName --jq '.tagName' 2>/dev/null || echo "")
+          
+          if [ -z "$LATEST_TAG" ]; then
+            # No existing tags, start with v0.0.1
+            NEW_VERSION="v0.0.1"
+          else
+            # Remove 'v' prefix if present
+            VERSION=${LATEST_TAG#v}
+            
+            # Parse major.minor.patch
+            IFS='.' read -r MAJOR MINOR PATCH <<< "$VERSION"
+            
+            # Increment patch
+            PATCH=$((PATCH + 1))
+            NEW_VERSION="v${MAJOR}.${MINOR}.${PATCH}"
+          fi
+          
+          echo "new_version=$NEW_VERSION" >> $GITHUB_OUTPUT
+          echo "Latest tag: ${LATEST_TAG:-none}, New version: $NEW_VERSION"
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Check if version already released
+        id: check-existing-release
+        run: |
+          COMMIT_SHA=${{ steps.commit-info.outputs.commit_sha }}
+
+          # Compare this run's commit to the latest release target commit.
+          LATEST_RELEASE_COMMIT=$(gh release view --json targetCommitish --jq '.targetCommitish' 2>/dev/null || echo "")
+
+          if [ -z "$LATEST_RELEASE_COMMIT" ]; then
+            echo "should_create_release=true" >> $GITHUB_OUTPUT
+            echo "No previous release found; release will be created"
+          elif [ "$LATEST_RELEASE_COMMIT" = "$COMMIT_SHA" ]; then
+            echo "should_create_release=false" >> $GITHUB_OUTPUT
+            echo "Latest release already points to commit $COMMIT_SHA"
+          else
+            echo "should_create_release=true" >> $GITHUB_OUTPUT
+            echo "Latest release commit differs ($LATEST_RELEASE_COMMIT); release will be created"
+          fi
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Create GitHub Release
+        if: steps.check-existing-release.outputs.should_create_release == 'true'
+        run: |
+          NEW_VERSION=${{ steps.commit-info.outputs.new_version }}
+          COMMIT_SHA=${{ steps.commit-info.outputs.commit_sha }}
+          
+          gh release create "$NEW_VERSION" \
+            --target "$COMMIT_SHA" \
+            --title "Release $NEW_VERSION" \
+            --notes "Automated release for commit ${COMMIT_SHA:0:7}"
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Release Summary
+        if: steps.check-existing-release.outputs.should_create_release == 'true'
+        run: |
+          echo "### Release Workflow Summary" >> $GITHUB_STEP_SUMMARY
+          echo "- Commit SHA: ${{ steps.commit-info.outputs.commit_sha }}" >> $GITHUB_STEP_SUMMARY
+          echo "- New Version: ${{ steps.commit-info.outputs.new_version }}" >> $GITHUB_STEP_SUMMARY
+          echo "- Release Created: ${{ steps.check-existing-release.outputs.should_create_release == 'true' && 'Yes' || 'No (latest release already targets this commit)' }}" >> $GITHUB_STEP_SUMMARY
