@@ -13,8 +13,6 @@ jobs:
     permissions:
       contents: write
     steps:
-      - uses: actions/checkout@v6
-
       - name: Get commit info and calculate next version
         id: commit-info
         run: |
