@@ -163,8 +163,8 @@ github.com/breml/errchkjson v0.4.1 h1:keFSS8D7A2T0haP9kzZTi7o26r7kE3vymjZNeNDRDw
 github.com/breml/errchkjson v0.4.1/go.mod h1:a23OvR6Qvcl7DG/Z4o0el6BRAjKnaReoPQFciAl9U3s=
 github.com/buildpacks/imgutil v0.0.0-20260415151438-73856e68b72b h1:wW08ZcJrzVhubQjTOkjkWzfeVHAHW0Tlmg3twecDauA=
 github.com/buildpacks/imgutil v0.0.0-20260415151438-73856e68b72b/go.mod h1:EBy9ZOatKkTBAWOgN2Y0aNV4P40dOdGyzzB9q2a5HBE=
-github.com/buildpacks/lifecycle v0.21.12 h1:0pj2lhDTuEcArgo2fFa2LYN69ildNLzOSQgxNf1TULM=
-github.com/buildpacks/lifecycle v0.21.12/go.mod h1:19rLV5zX7p68AslalkHDuNFCy2PvmipzWr1wwFcGuAg=
+github.com/buildpacks/lifecycle v0.21.13 h1:Zc7b2dT/n33wpIL8MVjqGCpLDNQkUykRPoOAjDSh4Pk=
+github.com/buildpacks/lifecycle v0.21.13/go.mod h1:Nlc4AwuTi26undoa+YuNmBftQHX38915+kz+kg2IZ7Q=
 github.com/buildpacks/pack v0.40.6 h1:w2HbQLv5UEvkbdoGt/QHmEbrMrvIwZZwuo/L0KaPdWE=
 github.com/buildpacks/pack v0.40.6/go.mod h1:/tcPeriACGmDZ0FCwkAyvwJaTFtDykGfaLUZk6u5aMw=
 github.com/butuzov/ireturn v0.4.0 h1:+s76bF/PfeKEdbG8b54aCocxXmi0wvYdOVsWxVO7n8E=

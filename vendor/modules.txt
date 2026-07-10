@@ -313,7 +313,7 @@ github.com/buildpacks/imgutil/layout
 github.com/buildpacks/imgutil/layout/sparse
 github.com/buildpacks/imgutil/local
 github.com/buildpacks/imgutil/remote
-# github.com/buildpacks/lifecycle v0.21.12
+# github.com/buildpacks/lifecycle v0.21.13
 ## explicit; go 1.26.4
 github.com/buildpacks/lifecycle/api
 github.com/buildpacks/lifecycle/archive
