@@ -22,20 +22,15 @@ jobs:
           # Get latest tag
           LATEST_TAG=$(gh release view --json tagName --jq '.tagName' 2>/dev/null || echo "")
           
-          if [ -z "$LATEST_TAG" ]; then
-            # No existing tags, start with v0.0.1
-            NEW_VERSION="v0.0.1"
-          else
-            # Remove 'v' prefix if present
-            VERSION=${LATEST_TAG#v}
-            
-            # Parse major.minor.patch
-            IFS='.' read -r MAJOR MINOR PATCH <<< "$VERSION"
-            
-            # Increment patch
-            PATCH=$((PATCH + 1))
-            NEW_VERSION="v${MAJOR}.${MINOR}.${PATCH}"
-          fi
+          # Remove 'v' prefix if present
+          VERSION=${LATEST_TAG#v}
+          
+          # Parse major.minor.patch
+          IFS='.' read -r MAJOR MINOR PATCH <<< "$VERSION"
+          
+          # Increment patch
+          PATCH=$((PATCH + 1))
+          NEW_VERSION="v${MAJOR}.${MINOR}.${PATCH}"
           
           echo "new_version=$NEW_VERSION" >> $GITHUB_OUTPUT
           echo "Latest tag: ${LATEST_TAG:-none}, New version: $NEW_VERSION"
