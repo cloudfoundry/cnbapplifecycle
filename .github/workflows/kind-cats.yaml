@@ -12,7 +12,7 @@ jobs:
       id-token: write
       contents: read
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@v7
       - name: Set kernel settings
         run: |
           docker run --rm \
@@ -33,7 +33,7 @@ jobs:
           go-version-file: go.mod
           cache: false
       - name: checkout kind-deployment
-        uses: actions/checkout@v6
+        uses: actions/checkout@v7
         with:
           repository: "cloudfoundry/kind-deployment"
           path: "kind"
@@ -52,7 +52,7 @@ jobs:
           cf-system/$(kubectl get pod -n cf-system -l app.kubernetes.io/name=fileserver \
           -o jsonpath='{.items[0].metadata.name}'):fileserver/v1/static/cnb_app_lifecycle/cnb_app_lifecycle.tgz
       - name: checkout CF test repository
-        uses: actions/checkout@v6
+        uses: actions/checkout@v7
         with:
           repository: "cloudfoundry/cf-acceptance-tests"
           ref: develop
