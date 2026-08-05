@@ -2,7 +2,7 @@
 {
     "admin_password": "${CC_ADMIN_PASSWORD}",
     "admin_user": "ccadmin",
-    "api": "api.127-0-0-1.nip.io",
+    "api": "api.cf.127-0-0-1.nip.io",
     "apps_domain": "apps.127-0-0-1.nip.io",
     "skip_ssl_validation": true,
     "timeout_scale": 2,
