@@ -7,7 +7,7 @@
 # charm.land/lipgloss/v2 v2.0.3
 ## explicit; go 1.25.0
 charm.land/lipgloss/v2
-# code.cloudfoundry.org/credhub-cli v0.0.0-20260727130059-9e78db728bcf
+# code.cloudfoundry.org/credhub-cli v0.0.0-20260803130145-c9a3a9772abe
 ## explicit; go 1.25.7
 code.cloudfoundry.org/credhub-cli/credhub
 code.cloudfoundry.org/credhub-cli/credhub/auth
@@ -902,8 +902,8 @@ github.com/google/go-containerregistry/pkg/v1/stream
 github.com/google/go-containerregistry/pkg/v1/tarball
 github.com/google/go-containerregistry/pkg/v1/types
 github.com/google/go-containerregistry/pkg/v1/validate
-# github.com/google/pprof v0.0.0-20260709232956-b9395ee17fa0
-## explicit; go 1.24.0
+# github.com/google/pprof v0.0.0-20260802141513-ef3492d7dac3
+## explicit; go 1.25.0
 github.com/google/pprof/profile
 # github.com/google/uuid v1.6.0
 ## explicit

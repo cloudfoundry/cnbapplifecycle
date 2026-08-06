@@ -5,7 +5,7 @@ go 1.26.5
 tool github.com/golangci/golangci-lint/v2/cmd/golangci-lint
 
 require (
-	code.cloudfoundry.org/credhub-cli v0.0.0-20260727130059-9e78db728bcf
+	code.cloudfoundry.org/credhub-cli v0.0.0-20260803130145-c9a3a9772abe
 	github.com/BurntSushi/toml v1.6.0
 	github.com/apex/log v1.9.0
 	github.com/buildpacks/lifecycle v0.21.14
@@ -167,7 +167,7 @@ require (
 	github.com/golangci/swaggoswag v0.0.0-20250504205917-77f2aca3143e // indirect
 	github.com/golangci/unconvert v0.0.0-20250410112200-a129a6e6413e // indirect
 	github.com/google/go-cmp v0.7.0 // indirect
-	github.com/google/pprof v0.0.0-20260709232956-b9395ee17fa0 // indirect
+	github.com/google/pprof v0.0.0-20260802141513-ef3492d7dac3 // indirect
 	github.com/google/uuid v1.6.0 // indirect
 	github.com/gordonklaus/ineffassign v0.2.0 // indirect
 	github.com/gorilla/mux v1.8.1 // indirect
