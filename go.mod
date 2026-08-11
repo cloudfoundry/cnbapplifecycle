@@ -11,7 +11,7 @@ require (
 	github.com/buildpacks/lifecycle v0.21.14
 	github.com/buildpacks/pack v0.40.9
 	github.com/cespare/xxhash/v2 v2.3.0
-	github.com/google/go-containerregistry v0.21.8
+	github.com/google/go-containerregistry v0.21.9
 	github.com/jarcoal/httpmock v1.4.2
 	github.com/moby/moby/api v1.55.0
 	github.com/onsi/ginkgo/v2 v2.32.0
