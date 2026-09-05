@@ -11,7 +11,7 @@ require (
 	github.com/buildpacks/lifecycle v0.21.18
 	github.com/buildpacks/pack v0.40.9
 	github.com/cespare/xxhash/v2 v2.3.0
-	github.com/google/go-containerregistry v0.21.9
+	github.com/google/go-containerregistry v0.22.1
 	github.com/jarcoal/httpmock v1.4.2
 	github.com/moby/moby/api v1.55.0
 	github.com/onsi/ginkgo/v2 v2.32.1
@@ -183,7 +183,7 @@ require (
 	github.com/karamaru-alpha/copyloopvar v1.2.2 // indirect
 	github.com/kisielk/errcheck v1.20.0 // indirect
 	github.com/kkHAIKE/contextcheck v1.1.6 // indirect
-	github.com/klauspost/compress v1.19.1 // indirect
+	github.com/klauspost/compress v1.19.2 // indirect
 	github.com/kulti/thelper v0.7.1 // indirect
 	github.com/kunwardeep/paralleltest v1.0.15 // indirect
 	github.com/lasiar/canonicalheader v1.1.2 // indirect
