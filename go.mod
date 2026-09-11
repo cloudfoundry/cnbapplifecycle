@@ -8,7 +8,7 @@ require (
 	code.cloudfoundry.org/credhub-cli v0.0.0-20260907130120-567c46b571cd
 	github.com/BurntSushi/toml v1.6.0
 	github.com/apex/log v1.9.0
-	github.com/buildpacks/lifecycle v0.21.18
+	github.com/buildpacks/lifecycle v0.21.19
 	github.com/buildpacks/pack v0.40.9
 	github.com/cespare/xxhash/v2 v2.3.0
 	github.com/google/go-containerregistry v0.22.1
