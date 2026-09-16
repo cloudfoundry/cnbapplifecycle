@@ -4,8 +4,8 @@
 4d63.com/gochecknoglobals v0.2.2/go.mod h1:lLxwTQjL5eIesRbvnzIP3jZtG140FnTdz+AlMa+ogt0=
 charm.land/lipgloss/v2 v2.0.6 h1:EaGKeuA8FvF+v2BT5VmZd2LoYLaMZJXA5n34th8nCIQ=
 charm.land/lipgloss/v2 v2.0.6/go.mod h1:ipDDJNSGa1hlwDtSfW1s2/xR8Vdhbut4PXh2zEKZd0Q=
-code.cloudfoundry.org/credhub-cli v0.0.0-20260914130355-0dc1859a5ca1 h1:hBcuoOsL/EGJEe4xafptaO4+fwWLirgXWXk1pTZXI6s=
-code.cloudfoundry.org/credhub-cli v0.0.0-20260914130355-0dc1859a5ca1/go.mod h1:aI5pkdg2N1ZowOk7R/qQPBI2u2tQ7rmW+VsK2/d2iDQ=
+code.cloudfoundry.org/credhub-cli v0.0.0-20260915183920-858ec47b73bd h1:U99F9mJg5VQdRm8xsVUgQf0pCc/Trd8z7G3NlLyWzqw=
+code.cloudfoundry.org/credhub-cli v0.0.0-20260915183920-858ec47b73bd/go.mod h1:aI5pkdg2N1ZowOk7R/qQPBI2u2tQ7rmW+VsK2/d2iDQ=
 codeberg.org/chavacava/garif v0.2.0 h1:F0tVjhYbuOCnvNcU3YSpO6b3Waw6Bimy4K0mM8y6MfY=
 codeberg.org/chavacava/garif v0.2.0/go.mod h1:P2BPbVbT4QcvLZrORc2T29szK3xEOlnl0GiPTJmEqBQ=
 codeberg.org/polyfloyd/go-errorlint v1.9.0 h1:VkdEEmA1VBpH6ecQoMR4LdphVI3fA4RrCh2an7YmodI=

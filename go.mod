@@ -5,7 +5,7 @@ go 1.26.6
 tool github.com/golangci/golangci-lint/v2/cmd/golangci-lint
 
 require (
-	code.cloudfoundry.org/credhub-cli v0.0.0-20260914130355-0dc1859a5ca1
+	code.cloudfoundry.org/credhub-cli v0.0.0-20260915183920-858ec47b73bd
 	github.com/BurntSushi/toml v1.6.0
 	github.com/apex/log v1.9.0
 	github.com/buildpacks/lifecycle v0.21.19
