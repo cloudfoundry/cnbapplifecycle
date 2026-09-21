@@ -5,7 +5,7 @@ go 1.26.6
 tool github.com/golangci/golangci-lint/v2/cmd/golangci-lint
 
 require (
-	code.cloudfoundry.org/credhub-cli v0.0.0-20260915183920-858ec47b73bd
+	code.cloudfoundry.org/credhub-cli v0.0.0-20260921130234-f80c1c8a1b4a
 	github.com/BurntSushi/toml v1.6.0
 	github.com/apex/log v1.9.0
 	github.com/buildpacks/lifecycle v0.21.19
@@ -14,8 +14,8 @@ require (
 	github.com/google/go-containerregistry v0.22.1
 	github.com/jarcoal/httpmock v1.4.2
 	github.com/moby/moby/api v1.56.0
-	github.com/onsi/ginkgo/v2 v2.32.2
-	github.com/onsi/gomega v1.43.0
+	github.com/onsi/ginkgo/v2 v2.33.0
+	github.com/onsi/gomega v1.43.1
 	github.com/spf13/cobra v1.10.2
 	github.com/testcontainers/testcontainers-go v0.44.0
 )
@@ -105,7 +105,7 @@ require (
 	github.com/clipperhouse/displaywidth v0.11.0 // indirect
 	github.com/clipperhouse/uax29/v2 v2.7.0 // indirect
 	github.com/cloudfoundry/go-socks5 v0.0.0-20250423223041-4ad5fea42851 // indirect
-	github.com/cloudfoundry/socks5-proxy v0.2.188 // indirect
+	github.com/cloudfoundry/socks5-proxy v0.2.189 // indirect
 	github.com/containerd/errdefs v1.0.0 // indirect
 	github.com/containerd/errdefs/pkg v0.3.0 // indirect
 	github.com/containerd/log v0.1.0 // indirect
