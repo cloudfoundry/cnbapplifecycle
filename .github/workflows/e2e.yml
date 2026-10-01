@@ -12,37 +12,9 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v7
-      - name: Set kernel settings
-        run: |
-          docker run --rm \
-            --privileged \
-            --pid host \
-            -v /lib/modules:/lib/modules:ro \
-            alpine sh -c "sysctl -w fs.inotify.max_user_instances=512 && modprobe nfs && modprobe nfsd"
-      - name: Install dependencies
-        run: |
-          mkdir -p $HOME/.local/bin && echo "$HOME/.local/bin" >> "$GITHUB_PATH"
-          curl -L "https://packages.cloudfoundry.org/stable?release=linux64-binary&version=${CF_CLI_VERSION}&source=github" | tar -zx
-          mv cf8 $HOME/.local/bin/cf
-        env:
-          CF_CLI_VERSION: "8.18.3"
-      - name: setup Go
-        uses: actions/setup-go@v7
+      - uses: cloudfoundry/kind-deployment/.github/actions/setup-cf@main
         with:
-          go-version-file: go.mod
-          cache: false
-      - name: checkout kind-deployment
-        uses: actions/checkout@v7
-        with:
-          repository: "cloudfoundry/kind-deployment"
-          path: "kind"
-      - name: Run make up
-        run: |
-          cd kind && make up
-      - name: Login
-        run: cd kind && make login
-      - name: Init
-        run: cd kind && make bootstrap-complete
+          github-token: ${{ secrets.GITHUB_TOKEN }}
       - name: Build cnbapplifecycle.tgz
         run: make copy-binaries package
       - name: Load updated cnbapplifecycle.tgz into kind
