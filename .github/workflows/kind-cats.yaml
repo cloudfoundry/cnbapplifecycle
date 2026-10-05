@@ -2,7 +2,7 @@ name: CF Acceptance Tests on KinD
 
 on:
   schedule:
-    - cron: '0 6 * * 1'
+    - cron: "0 6 * * 1"
   workflow_dispatch:
 
 jobs:
@@ -13,7 +13,7 @@ jobs:
       contents: read
     steps:
       - uses: actions/checkout@v7
-      - uses: cloudfoundry/kind-deployment/.github/actions/setup-cf@main
+      - uses: cloudfoundry/kind-deployment/.github/actions/setup-cf@v0.25.0
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
       - name: Build cnbapplifecycle.tgz
@@ -23,21 +23,11 @@ jobs:
           kubectl cp bin/cnb_app_lifecycle.tgz \
           cf-system/$(kubectl get pod -n cf-system -l app.kubernetes.io/name=fileserver \
           -o jsonpath='{.items[0].metadata.name}'):fileserver/v1/static/cnb_app_lifecycle/cnb_app_lifecycle.tgz
-      - name: checkout CF test repository
-        uses: actions/checkout@v7
+      - uses: cloudfoundry/kind-deployment/.github/actions/setup-cf-tests@v0.25.0
         with:
-          repository: "cloudfoundry/cf-acceptance-tests"
-          ref: develop
-          path: "cf-acceptance-tests"
-      - name: setup Python
-        uses: actions/setup-python@v7
-        with:
-          python-version: "3"
-      - name: templating config
-        shell: bash
-        run: |
-          source kind/temp/secrets.sh
-          python3 -c 'import os,sys;[sys.stdout.write(os.path.expandvars(l)) for l in sys.stdin]' < ./.github/cats-config.tpl > ./.github/cats-config.json
+          test-repo: cf-acceptance-tests
+          config-template: ${{ github.workspace }}/.github/cats-config.tpl
+          config-output: ${{ github.workspace }}/.github/cats-config.json
       - name: run CATS
         env:
           CONFIG: "${{ github.workspace }}/.github/cats-config.json"
