@@ -13,7 +13,7 @@ jobs:
       contents: read
     steps:
       - uses: actions/checkout@v7
-      - uses: cloudfoundry/kind-deployment/.github/actions/setup-cf@v0.25.0
+      - uses: cloudfoundry/kind-deployment/.github/actions/setup-cf@v0.26.0
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
       - name: Build cnbapplifecycle.tgz
@@ -23,7 +23,7 @@ jobs:
           kubectl cp bin/cnb_app_lifecycle.tgz \
           cf-system/$(kubectl get pod -n cf-system -l app.kubernetes.io/name=fileserver \
           -o jsonpath='{.items[0].metadata.name}'):fileserver/v1/static/cnb_app_lifecycle/cnb_app_lifecycle.tgz
-      - uses: cloudfoundry/kind-deployment/.github/actions/setup-cf-tests@v0.25.0
+      - uses: cloudfoundry/kind-deployment/.github/actions/setup-cf-tests@v0.26.0
         with:
           test-repo: cf-acceptance-tests
           config-template: ${{ github.workspace }}/.github/cats-config.tpl
