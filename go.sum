@@ -167,8 +167,8 @@ github.com/buildpacks/imgutil v0.0.0-20260821195038-6047007ed8ea h1:oIHYIoJ1Aveb
 github.com/buildpacks/imgutil v0.0.0-20260821195038-6047007ed8ea/go.mod h1:EBy9ZOatKkTBAWOgN2Y0aNV4P40dOdGyzzB9q2a5HBE=
 github.com/buildpacks/lifecycle v0.21.23 h1:PesO5P5DXTjOEsyWpqp+SqW9qySvEJd95mZib4+PwWw=
 github.com/buildpacks/lifecycle v0.21.23/go.mod h1:/eZcojlLCDkG8WFHP1LkLPFPD9ay5W4Ne0io1tsMSS4=
-github.com/buildpacks/pack v0.40.9 h1:DNgCI19uIZuuQL9QEZA30xBdCVGx8G4tl01dkHwKOwg=
-github.com/buildpacks/pack v0.40.9/go.mod h1:X+FKtQMkkWcRdKLmICxgetDlccor+zbbu3jVAMKHCDc=
+github.com/buildpacks/pack v0.40.10 h1:f9ydfdmn2bj9YMWb7OfFBzOGlCHFnzQLZlBBFRbB2cQ=
+github.com/buildpacks/pack v0.40.10/go.mod h1:5EFXjR/BBycsirIDRFdeB0ZE/yLdGSTeToyHptH4/mM=
 github.com/butuzov/ireturn v0.4.1 h1:vWb3NO4t77iku/sjCQ/2pHTQeOmxEhjIriJqRLg1Y+I=
 github.com/butuzov/ireturn v0.4.1/go.mod h1:q+DXKzTDV5guNuXLnIab9fKXizTn2miZHLhxH7V/GB4=
 github.com/butuzov/mirror v1.3.3 h1:v0RsWBhfFc1RQqE/f3sHpSttKDtodFn0gFmtYyD4/hA=
