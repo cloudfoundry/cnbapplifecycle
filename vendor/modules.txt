@@ -360,8 +360,8 @@ github.com/buildpacks/lifecycle/phase
 github.com/buildpacks/lifecycle/platform
 github.com/buildpacks/lifecycle/platform/files
 github.com/buildpacks/lifecycle/platform/launch
-# github.com/buildpacks/pack v0.40.9
-## explicit; go 1.25.12
+# github.com/buildpacks/pack v0.40.10
+## explicit; go 1.26.10
 github.com/buildpacks/pack/internal/ioutil
 github.com/buildpacks/pack/internal/layer
 github.com/buildpacks/pack/internal/name
