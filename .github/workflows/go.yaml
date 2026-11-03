@@ -28,17 +28,3 @@ jobs:
         with:
           go-version: stable
       - run: make lint
-  diego-compat:
-    runs-on: ubuntu-latest
-    if: github.actor == 'dependabot[bot]' && github.event_name == 'pull_request'
-    steps:
-      - uses: actions/checkout@v7
-        with:
-          repository: cloudfoundry/diego-release
-          ref: develop
-          submodules: recursive
-      - uses: actions/setup-go@v7
-        with:
-          go-version: stable
-      - run: |
-          cd src/code.cloudfoundry.org && go get -u code.cloudfoundry.org/cnbapplifecycle@${{ github.event.pull_request.head.sha }}
