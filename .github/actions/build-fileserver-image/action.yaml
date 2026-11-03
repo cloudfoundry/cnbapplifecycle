@@ -1,0 +1,58 @@
+name: Build fileserver image
+
+inputs:
+  ref:
+    required: true
+
+outputs:
+  load-images:
+    value: ${{ steps.build.outputs.list }}
+  values-file:
+    value: ${{ steps.values.outputs.file }}
+
+runs:
+  using: composite
+  steps:
+    - uses: docker/setup-buildx-action@v4
+    - uses: actions/setup-go@v7
+      with:
+        go-version: stable
+    - uses: actions/checkout@v7
+      with:
+        repository: cloudfoundry/diego-release
+        path: diego-release
+        submodules: true
+    - uses: actions/checkout@v7
+      with:
+        repository: cloudfoundry/cf-k8s-releases
+        path: cf-k8s-releases
+    - name: Bump diego-release's cnbapplifecycle to the commit under test
+      shell: bash
+      working-directory: ${{ github.workspace }}/diego-release/src/code.cloudfoundry.org
+      run: |
+        go get -u code.cloudfoundry.org/cnbapplifecycle@${{ inputs.ref }}
+        go mod vendor
+    - name: Build fileserver image
+      id: build
+      shell: bash
+      working-directory: ${{ github.workspace }}/cf-k8s-releases/diego
+      env:
+        BUILDX_BAKE_ENTITLEMENTS_FS: "0"
+      run: |
+        docker buildx bake fileserver --load \
+          --set fileserver.contexts.src="${{ github.workspace }}/diego-release/src" \
+          --set fileserver.contexts.config="${{ github.workspace }}/diego-release/config"
+        echo "list=$(docker buildx bake fileserver --print | jq -r '[.target[].tags[]] | join(",")')" >> "$GITHUB_OUTPUT"
+    - name: Pin diego helm chart to the built fileserver
+      id: values
+      shell: bash
+      working-directory: ${{ github.workspace }}/cf-k8s-releases
+      run: |
+        yq -e -i '.fileserver.image.repository = "fileserver"' diego/helm/values.yaml
+        file="${{ runner.temp }}/state-values.yaml"
+        cat > "$file" <<EOF
+        charts:
+          diego:
+            url: ${{ github.workspace }}/cf-k8s-releases/diego/helm
+        EOF
+        echo "file=$file" >> "$GITHUB_OUTPUT"
