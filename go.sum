@@ -167,8 +167,8 @@ github.com/buildpacks/imgutil v0.0.0-20261021214501-195bdfd62620 h1:hWQNmuCA6zrN
 github.com/buildpacks/imgutil v0.0.0-20261021214501-195bdfd62620/go.mod h1:EBy9ZOatKkTBAWOgN2Y0aNV4P40dOdGyzzB9q2a5HBE=
 github.com/buildpacks/lifecycle v0.21.27 h1:mmnEgAJOKnvBp8/2NJ2qwhhyxaOpj+OowaPivjLxrMo=
 github.com/buildpacks/lifecycle v0.21.27/go.mod h1:oBjW/oEJNsQKNg6OZgMwEHi2tl0tK2tLWjTY3enYyQ0=
-github.com/buildpacks/pack v0.40.10 h1:f9ydfdmn2bj9YMWb7OfFBzOGlCHFnzQLZlBBFRbB2cQ=
-github.com/buildpacks/pack v0.40.10/go.mod h1:5EFXjR/BBycsirIDRFdeB0ZE/yLdGSTeToyHptH4/mM=
+github.com/buildpacks/pack v0.40.11 h1:l9dKHTCd/Y+tmqZx8rSwrO757nkJ+3wwG2DZ8xMpmZA=
+github.com/buildpacks/pack v0.40.11/go.mod h1:gAbK0NZFBFAqW7o2yPJaJfAzfQhIqDxDU0SkjF8sZcM=
 github.com/butuzov/ireturn v0.4.1 h1:vWb3NO4t77iku/sjCQ/2pHTQeOmxEhjIriJqRLg1Y+I=
 github.com/butuzov/ireturn v0.4.1/go.mod h1:q+DXKzTDV5guNuXLnIab9fKXizTn2miZHLhxH7V/GB4=
 github.com/butuzov/mirror v1.3.3 h1:v0RsWBhfFc1RQqE/f3sHpSttKDtodFn0gFmtYyD4/hA=
@@ -181,8 +181,6 @@ github.com/cenkalti/backoff/v4 v4.3.0 h1:MyRJ/UdXutAwSAT+s3wNd7MfTIcy71VQueUuFK3
 github.com/cenkalti/backoff/v4 v4.3.0/go.mod h1:Y3VNntkOUPxTVeUxJ/G5vcM//AlwfmyYozVcomhLiZE=
 github.com/cespare/xxhash/v2 v2.3.0 h1:UL815xU9SqsFlibzuggzjXhog7bL6oX9BbNZnL2UFvs=
 github.com/cespare/xxhash/v2 v2.3.0/go.mod h1:VGX0DQ3Q6kWi7AoAeZDth3/j3BFtOZR5XLFGgcrjCOs=
-github.com/chainguard-dev/kaniko v1.25.16 h1:EUN2N03DeUdSH8JktI3hjbL7t4Co3Pxs9VZsuxOtP0Y=
-github.com/chainguard-dev/kaniko v1.25.16/go.mod h1:obUPXybmBinjL9XR52phln5utrGbmdXKC/R0udKRFRw=
 github.com/charithe/durationcheck v0.0.11 h1:g1/EX1eIiKS57NTWsYtHDZ/APfeXKhye1DidBcABctk=
 github.com/charithe/durationcheck v0.0.11/go.mod h1:x5iZaixRNl8ctbM+3B2RrPG5t856TxRyVQEnbIEM2X4=
 github.com/charmbracelet/colorprofile v0.4.3 h1:QPa1IWkYI+AOB+fE+mg/5/4HRMZcaXex9t5KX76i20Q=
@@ -451,8 +449,8 @@ github.com/kisielk/errcheck v1.30.0 h1:ZIxNDAfAd4larXHTceoZP/dYPAB90dHg1OYhA2sVh
 github.com/kisielk/errcheck v1.30.0/go.mod h1:uiCAInmFuyOje4VDdbQSP9mgqf5gORYSXrDf19XilsI=
 github.com/kkHAIKE/contextcheck v1.1.6 h1:7HIyRcnyzxL9Lz06NGhiKvenXq7Zw6Q0UQu/ttjfJCE=
 github.com/kkHAIKE/contextcheck v1.1.6/go.mod h1:3dDbMRNBFaq8HFXWC1JyvDSPm43CmE6IuHam8Wr0rkg=
-github.com/klauspost/compress v1.20.1 h1:T7kKElXUMXrUJ2E9QhQhxFtcK5rPyLdsGZvdbLMPdiQ=
-github.com/klauspost/compress v1.20.1/go.mod h1:LUdAzn7YLVvxLpc7y3V1m40wESHTgc1422pwwBSKYuI=
+github.com/klauspost/compress v1.20.2 h1:v5tiZvm1KGLyg5d5oXdXe3lsSPrbEUiKoXGia//I7Qo=
+github.com/klauspost/compress v1.20.2/go.mod h1:LUdAzn7YLVvxLpc7y3V1m40wESHTgc1422pwwBSKYuI=
 github.com/klauspost/cpuid/v2 v2.4.0 h1:S6Hrbc7+ywsr0r+RLapfGBHfyefhCTwEh3A0tV913Dw=
 github.com/klauspost/cpuid/v2 v2.4.0/go.mod h1:19jmZ9mjzoF//ddRSUsv0zfBTJWh3QJh9FNxZTMrGxU=
 github.com/kr/logfmt v0.0.0-20140226030751-b84e30acd515/go.mod h1:+0opPa2QZZtGFBFZlji/RkVcI2GknAs/DXo4wKdlNEc=
