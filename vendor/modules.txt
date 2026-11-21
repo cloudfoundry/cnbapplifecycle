@@ -1031,7 +1031,7 @@ github.com/lufia/plan9stats
 # github.com/macabu/inamedparam v0.2.0
 ## explicit; go 1.23.0
 github.com/macabu/inamedparam
-# github.com/magiconair/properties v1.8.10
+# github.com/magiconair/properties v1.18.12
 ## explicit; go 1.19
 github.com/magiconair/properties
 # github.com/manuelarte/embeddedstructfieldcheck v0.4.0
@@ -1423,8 +1423,8 @@ github.com/stretchr/testify/require
 # github.com/subosito/gotenv v1.6.0
 ## explicit; go 1.18
 github.com/subosito/gotenv
-# github.com/testcontainers/testcontainers-go v0.44.0
-## explicit; go 1.25.0
+# github.com/testcontainers/testcontainers-go v0.45.0
+## explicit; go 1.26.0
 github.com/testcontainers/testcontainers-go
 github.com/testcontainers/testcontainers-go/exec
 github.com/testcontainers/testcontainers-go/internal
