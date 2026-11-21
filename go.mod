@@ -1,6 +1,6 @@
 module code.cloudfoundry.org/cnbapplifecycle
 
-go 1.26.10
+go 1.26.11
 
 tool github.com/golangci/golangci-lint/v2/cmd/golangci-lint
 
@@ -9,7 +9,7 @@ require (
 	github.com/BurntSushi/toml v1.6.0
 	github.com/apex/log v1.9.0
 	github.com/buildpacks/lifecycle v0.21.27
-	github.com/buildpacks/pack v0.40.10
+	github.com/buildpacks/pack v0.40.11
 	github.com/cespare/xxhash/v2 v2.3.0
 	github.com/google/go-containerregistry v0.22.1
 	github.com/jarcoal/httpmock v1.4.2
@@ -184,7 +184,7 @@ require (
 	github.com/karamaru-alpha/copyloopvar v1.2.2 // indirect
 	github.com/kisielk/errcheck v1.30.0 // indirect
 	github.com/kkHAIKE/contextcheck v1.1.6 // indirect
-	github.com/klauspost/compress v1.20.1 // indirect
+	github.com/klauspost/compress v1.20.2 // indirect
 	github.com/kulti/thelper v0.7.1 // indirect
 	github.com/kunwardeep/paralleltest v1.0.16 // indirect
 	github.com/ldez/exptostd v0.4.5 // indirect
